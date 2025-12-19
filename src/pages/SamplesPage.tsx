@@ -1,55 +1,78 @@
-import { Star, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+
+// Import all sample images
+import marinKitagawa from "@/assets/samples/marin-kitagawa.png";
+import zeroTwo from "@/assets/samples/zero-two.png";
+import rem from "@/assets/samples/rem.png";
+import nezuko from "@/assets/samples/nezuko.png";
+import mikuNakano from "@/assets/samples/miku-nakano.png";
+import chika from "@/assets/samples/chika.png";
+import yor from "@/assets/samples/yor.png";
+import anya from "@/assets/samples/anya.png";
+import makima from "@/assets/samples/makima.png";
+import power from "@/assets/samples/power.png";
+import hinata from "@/assets/samples/hinata.png";
+import mikasa from "@/assets/samples/mikasa.png";
+import asuka from "@/assets/samples/asuka.png";
+import rei from "@/assets/samples/rei.png";
+import sailorMoon from "@/assets/samples/sailor-moon.png";
+import tanjiro from "@/assets/samples/tanjiro.png";
+import gojo from "@/assets/samples/gojo.png";
+import itadori from "@/assets/samples/itadori.png";
+import levi from "@/assets/samples/levi.png";
+import eren from "@/assets/samples/eren.png";
+import naruto from "@/assets/samples/naruto.png";
+import sasuke from "@/assets/samples/sasuke.png";
+import goku from "@/assets/samples/goku.png";
+import vegeta from "@/assets/samples/vegeta.png";
+import luffy from "@/assets/samples/luffy.png";
+import zoro from "@/assets/samples/zoro.png";
+import todoroki from "@/assets/samples/todoroki.png";
+import deku from "@/assets/samples/deku.png";
+import shinobu from "@/assets/samples/shinobu.png";
+import mitsuri from "@/assets/samples/mitsuri.png";
+import ochaco from "@/assets/samples/ochaco.png";
+import toga from "@/assets/samples/toga.png";
+import raphtalia from "@/assets/samples/raphtalia.png";
+import emilia from "@/assets/samples/emilia.png";
 
 // Sample anime characters for the gallery
 const animeCharacters = [
-  { id: 1, name: "Marin Kitagawa", anime: "My Dress-Up Darling" },
-  { id: 2, name: "Zero Two", anime: "Darling in the Franxx" },
-  { id: 3, name: "Rem", anime: "Re:Zero" },
-  { id: 4, name: "Nezuko Kamado", anime: "Demon Slayer" },
-  { id: 5, name: "Miku Nakano", anime: "Quintessential Quintuplets" },
-  { id: 6, name: "Chika Fujiwara", anime: "Kaguya-sama" },
-  { id: 7, name: "Yor Forger", anime: "Spy x Family" },
-  { id: 8, name: "Anya Forger", anime: "Spy x Family" },
-  { id: 9, name: "Makima", anime: "Chainsaw Man" },
-  { id: 10, name: "Power", anime: "Chainsaw Man" },
-  { id: 11, name: "Hinata Hyuga", anime: "Naruto" },
-  { id: 12, name: "Mikasa Ackerman", anime: "Attack on Titan" },
-  { id: 13, name: "Asuka Langley", anime: "Evangelion" },
-  { id: 14, name: "Rei Ayanami", anime: "Evangelion" },
-  { id: 15, name: "Sailor Moon", anime: "Sailor Moon" },
-  { id: 16, name: "Tanjiro Kamado", anime: "Demon Slayer" },
-  { id: 17, name: "Gojo Satoru", anime: "Jujutsu Kaisen" },
-  { id: 18, name: "Itadori Yuji", anime: "Jujutsu Kaisen" },
-  { id: 19, name: "Levi Ackerman", anime: "Attack on Titan" },
-  { id: 20, name: "Eren Yeager", anime: "Attack on Titan" },
-  { id: 21, name: "Naruto Uzumaki", anime: "Naruto" },
-  { id: 22, name: "Sasuke Uchiha", anime: "Naruto" },
-  { id: 23, name: "Goku", anime: "Dragon Ball" },
-  { id: 24, name: "Vegeta", anime: "Dragon Ball" },
-  { id: 25, name: "Luffy", anime: "One Piece" },
-  { id: 26, name: "Zoro", anime: "One Piece" },
-  { id: 27, name: "Todoroki Shoto", anime: "My Hero Academia" },
-  { id: 28, name: "Deku", anime: "My Hero Academia" },
-  { id: 29, name: "Shinobu Kocho", anime: "Demon Slayer" },
-  { id: 30, name: "Mitsuri Kanroji", anime: "Demon Slayer" },
-  { id: 31, name: "Ochaco Uraraka", anime: "My Hero Academia" },
-  { id: 32, name: "Toga Himiko", anime: "My Hero Academia" },
-  { id: 33, name: "Raphtalia", anime: "Shield Hero" },
-  { id: 34, name: "Emilia", anime: "Re:Zero" },
+  { id: 1, name: "Marin Kitagawa", anime: "My Dress-Up Darling", image: marinKitagawa },
+  { id: 2, name: "Zero Two", anime: "Darling in the Franxx", image: zeroTwo },
+  { id: 3, name: "Rem", anime: "Re:Zero", image: rem },
+  { id: 4, name: "Nezuko Kamado", anime: "Demon Slayer", image: nezuko },
+  { id: 5, name: "Miku Nakano", anime: "Quintessential Quintuplets", image: mikuNakano },
+  { id: 6, name: "Chika Fujiwara", anime: "Kaguya-sama", image: chika },
+  { id: 7, name: "Yor Forger", anime: "Spy x Family", image: yor },
+  { id: 8, name: "Anya Forger", anime: "Spy x Family", image: anya },
+  { id: 9, name: "Makima", anime: "Chainsaw Man", image: makima },
+  { id: 10, name: "Power", anime: "Chainsaw Man", image: power },
+  { id: 11, name: "Hinata Hyuga", anime: "Naruto", image: hinata },
+  { id: 12, name: "Mikasa Ackerman", anime: "Attack on Titan", image: mikasa },
+  { id: 13, name: "Asuka Langley", anime: "Evangelion", image: asuka },
+  { id: 14, name: "Rei Ayanami", anime: "Evangelion", image: rei },
+  { id: 15, name: "Sailor Moon", anime: "Sailor Moon", image: sailorMoon },
+  { id: 16, name: "Tanjiro Kamado", anime: "Demon Slayer", image: tanjiro },
+  { id: 17, name: "Gojo Satoru", anime: "Jujutsu Kaisen", image: gojo },
+  { id: 18, name: "Itadori Yuji", anime: "Jujutsu Kaisen", image: itadori },
+  { id: 19, name: "Levi Ackerman", anime: "Attack on Titan", image: levi },
+  { id: 20, name: "Eren Yeager", anime: "Attack on Titan", image: eren },
+  { id: 21, name: "Naruto Uzumaki", anime: "Naruto", image: naruto },
+  { id: 22, name: "Sasuke Uchiha", anime: "Naruto", image: sasuke },
+  { id: 23, name: "Goku", anime: "Dragon Ball", image: goku },
+  { id: 24, name: "Vegeta", anime: "Dragon Ball", image: vegeta },
+  { id: 25, name: "Luffy", anime: "One Piece", image: luffy },
+  { id: 26, name: "Zoro", anime: "One Piece", image: zoro },
+  { id: 27, name: "Todoroki Shoto", anime: "My Hero Academia", image: todoroki },
+  { id: 28, name: "Deku", anime: "My Hero Academia", image: deku },
+  { id: 29, name: "Shinobu Kocho", anime: "Demon Slayer", image: shinobu },
+  { id: 30, name: "Mitsuri Kanroji", anime: "Demon Slayer", image: mitsuri },
+  { id: 31, name: "Ochaco Uraraka", anime: "My Hero Academia", image: ochaco },
+  { id: 32, name: "Toga Himiko", anime: "My Hero Academia", image: toga },
+  { id: 33, name: "Raphtalia", anime: "Shield Hero", image: raphtalia },
+  { id: 34, name: "Emilia", anime: "Re:Zero", image: emilia },
 ];
-
-// Generate pastel colors for placeholders
-const getPlaceholderColor = (index: number) => {
-  const colors = [
-    "from-rose-light/60 to-rose/40",
-    "from-sky/60 to-lavender/40",
-    "from-cream/60 to-accent/40",
-    "from-mint/60 to-sky/40",
-    "from-lavender/60 to-rose-light/40",
-    "from-accent/60 to-cream/40",
-  ];
-  return colors[index % colors.length];
-};
 
 const SamplesPage = () => {
   return (
@@ -81,23 +104,15 @@ const SamplesPage = () => {
             >
               <div className="glass-card rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 hover:shadow-glow cursor-pointer">
                 {/* Toy Preview */}
-                <div className="aspect-square relative overflow-hidden">
-                  <div className={`absolute inset-0 bg-gradient-to-br ${getPlaceholderColor(index)}`}>
-                    {/* Placeholder toy design */}
-                    <div className="absolute inset-3 rounded-xl bg-background/40 backdrop-blur-sm flex items-center justify-center">
-                      <div className="text-center p-2">
-                        <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                          <Star className="w-6 h-6 text-primary fill-primary" />
-                        </div>
-                        <p className="font-handwritten text-foreground text-sm leading-tight">
-                          {character.name.split(" ")[0]}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    {/* Shine effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
+                <div className="aspect-square relative overflow-hidden bg-gradient-to-br from-cream/40 to-sky/20">
+                  <img 
+                    src={character.image} 
+                    alt={`${character.name} 3D toy figure`}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  
+                  {/* Shine effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
                   {/* Sparkle decoration */}
                   <Sparkles className="absolute top-2 right-2 w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity animate-sparkle" />
