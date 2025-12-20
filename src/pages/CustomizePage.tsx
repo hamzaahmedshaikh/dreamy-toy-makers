@@ -2,8 +2,10 @@ import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, Sparkles, CheckCircle, Twitter, Heart, Package, ArrowRight, Image } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import emailjs from '@emailjs/browser';
 
 type OrderStep = "upload" | "preview" | "form" | "success";
 
@@ -14,6 +16,7 @@ const CustomizePage = () => {
     firstName: "",
     lastName: "",
     paypalEmail: "",
+    paymentMethod: "paypal",
   });
   const { toast } = useToast();
 
@@ -40,7 +43,7 @@ const CustomizePage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.paypalEmail.trim()) {
       toast({
         title: "Please fill all fields",
@@ -50,18 +53,40 @@ const CustomizePage = () => {
       return;
     }
 
-    // For now, just show success - email functionality will need Cloud
-    setStep("success");
-    toast({
-      title: "Order Placed! 🎉",
-      description: "Please complete your payment via PayPal",
-    });
+    try {
+      // Send email to yourself with order details
+      await emailjs.send(
+        'service_3kq9rho',
+        'template_2cb6uc7',
+        {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          paypalEmail: formData.paypalEmail,
+          paymentMethod: formData.paymentMethod,
+        },
+        'AguvgiZG-z9aRnJhH'
+      );
+
+      setStep("success");
+      toast({
+        title: "Order Placed! 🎉",
+        description: "Check your email for order confirmation",
+      });
+    } catch (error) {
+      console.error('Email sending failed:', error);
+      toast({
+        title: "Order Placed!",
+        description: "There was an issue sending the email, but your order was recorded.",
+        variant: "destructive",
+      });
+      setStep("success");
+    }
   };
 
   const resetOrder = () => {
     setStep("upload");
     setUploadedImage(null);
-    setFormData({ firstName: "", lastName: "", paypalEmail: "" });
+    setFormData({ firstName: "", lastName: "", paypalEmail: "", paymentMethod: "paypal" });
   };
 
   return (
@@ -246,6 +271,24 @@ const CustomizePage = () => {
                   </p>
                 </div>
 
+                <div className="space-y-3">
+                  <Label className="text-foreground">Payment Method</Label>
+                  <RadioGroup
+                    value={formData.paymentMethod}
+                    onValueChange={(value) => setFormData({ ...formData, paymentMethod: value })}
+                    className="flex flex-col space-y-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="paypal" id="paypal" />
+                      <Label htmlFor="paypal" className="text-foreground">PayPal</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="other" id="other" />
+                      <Label htmlFor="other" className="text-foreground">Other Payment Method</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
                 {/* Order Summary */}
                 <div className="bg-primary/5 rounded-2xl p-4">
                   <h3 className="font-semibold text-foreground mb-2">Order Summary</h3>
@@ -283,45 +326,72 @@ const CustomizePage = () => {
               <h1 className="font-handwritten text-5xl text-foreground mb-4">
                 Order Placed! 🎉
               </h1>
-              
-              <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-                <strong>Once you accept the payment on PayPal</strong>, please share your 
-                payment screenshot on X (Twitter) to confirm your order!
-              </p>
 
-              <div className="bg-primary/5 rounded-2xl p-6 mb-8">
-                <h3 className="font-semibold text-foreground mb-4">Next Steps:</h3>
-                <ol className="text-left space-y-3 text-muted-foreground">
-                  <li className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">1</span>
-                    <span>Check your PayPal email for the payment request</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">2</span>
-                    <span>Complete the payment of $200 USD</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">3</span>
-                    <span>Take a screenshot of your payment confirmation</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">4</span>
-                    <span>Share it on X by tagging @whatsupskylar</span>
-                  </li>
-                </ol>
-              </div>
+              {formData.paymentMethod === "paypal" ? (
+                <>
+                  <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+                    Order placed, you'll receive a payment request on PayPal, accept it and send the payment proof on this X account.
+                  </p>
 
-              <a
-                href="https://x.com/whatsupskylar"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button variant="hero" size="lg" className="w-full sm:w-auto">
-                  <Twitter className="w-5 h-5" />
-                  Go to @whatsupskylar on X
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-              </a>
+                  <div className="bg-primary/5 rounded-2xl p-6 mb-8">
+                    <h3 className="font-semibold text-foreground mb-4">Next Steps:</h3>
+                    <ol className="text-left space-y-3 text-muted-foreground">
+                      <li className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">1</span>
+                        <span>Check your PayPal email for the payment request</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">2</span>
+                        <span>Accept the payment request and complete payment</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">3</span>
+                        <span>Take a screenshot of your payment confirmation</span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">4</span>
+                        <span>Send it to @whatsupskylar on X</span>
+                      </li>
+                    </ol>
+                  </div>
+
+                  <a
+                    href="https://x.com/whatsupskylar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                      <Twitter className="w-5 h-5" />
+                      Send Payment Proof on X
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </a>
+                </>
+              ) : (
+                <>
+                  <div className="bg-primary/5 rounded-2xl p-6 mb-8">
+                    <div className="text-center">
+                      <Heart className="w-12 h-12 text-primary mx-auto mb-4" />
+                      <h3 className="font-semibold text-foreground mb-2">No PayPal? No problem 💖</h3>
+                      <p className="text-muted-foreground">
+                        After placing your order, please DM me on X to arrange another payment method.
+                      </p>
+                    </div>
+                  </div>
+
+                  <a
+                    href="https://x.com/whatsupskylar"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="hero" size="lg" className="w-full sm:w-auto">
+                      <Twitter className="w-5 h-5" />
+                      Contact on X
+                      <ArrowRight className="w-4 h-4" />
+                    </Button>
+                  </a>
+                </>
+              )}
 
               <Button
                 variant="ghost"
