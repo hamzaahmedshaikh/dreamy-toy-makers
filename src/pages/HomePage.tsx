@@ -35,7 +35,7 @@ const HomePage = () => {
               <Star className="w-6 h-6 text-accent fill-accent" />
               <div className="text-left">
                 <p className="text-sm text-muted-foreground">Starting at just</p>
-                <p className="text-3xl font-bold text-foreground">$200 <span className="text-base font-normal text-muted-foreground">USD</span></p>
+                <p className="text-3xl font-bold text-foreground">$400 <span className="text-base font-normal text-muted-foreground">USD</span></p>
               </div>
               <Star className="w-6 h-6 text-accent fill-accent" />
             </div>

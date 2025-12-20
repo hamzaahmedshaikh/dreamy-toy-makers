@@ -20,8 +20,12 @@ const AboutPage = () => {
           {/* Profile Section */}
           <div className="flex flex-col sm:flex-row items-center gap-8 mb-10">
             <div className="relative">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-rose-light to-rose flex items-center justify-center">
-                <span className="font-handwritten text-5xl text-primary-foreground">S</span>
+              <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-primary/20 shadow-soft">
+                <img
+                  src="https://i.ibb.co/DDWvThgV/oc.jpg"
+                  alt="Skylar's OC Character"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <Heart className="absolute -top-2 -right-2 w-8 h-8 text-primary fill-primary animate-pulse" />
               <Sparkles className="absolute -bottom-1 -left-2 w-6 h-6 text-accent animate-sparkle" />

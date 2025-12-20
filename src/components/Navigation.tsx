@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Heart, Sparkles, Home, Image, User } from "lucide-react";
+import { Heart, Sparkles, Home, Image, User, FileText } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
@@ -9,6 +9,7 @@ const Navigation = () => {
     { path: "/customize", label: "Customize", icon: Sparkles },
     { path: "/samples", label: "Samples", icon: Image },
     { path: "/about", label: "About", icon: User },
+    { path: "/policies", label: "Policies", icon: FileText },
   ];
 
   return (

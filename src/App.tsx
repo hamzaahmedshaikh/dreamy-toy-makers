@@ -11,6 +11,7 @@ import CustomizePage from "./pages/CustomizePage";
 import SamplesPage from "./pages/SamplesPage";
 import AboutPage from "./pages/AboutPage";
 import NotFound from "./pages/NotFound";
+import PoliciesPage from "./pages/PoliciesPage";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
               <Route path="/customize" element={<CustomizePage />} />
               <Route path="/samples" element={<SamplesPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/policies" element={<PoliciesPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
