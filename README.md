@@ -32,8 +32,8 @@ A beautiful web application for ordering custom 3D printed anime character toys.
 
 1. Clone the repository:
 ```bash
-git clone <YOUR_GIT_URL>
-cd dreamy-toy-makers
+git clone <https://github.com/hamzaahmedshaikh/dreamy-toy-makers.gitL>
+cd skylar-toy-makers
 ```
 
 2. Install dependencies:

@@ -12,10 +12,12 @@ type OrderStep = "upload" | "preview" | "form" | "success";
 const CustomizePage = () => {
   const [step, setStep] = useState<OrderStep>("upload");
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     paypalEmail: "",
+    message: "",
     paymentMethod: "paypal",
   });
   const { toast } = useToast();
@@ -31,7 +33,8 @@ const CustomizePage = () => {
         });
         return;
       }
-      
+
+      setUploadedFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setUploadedImage(reader.result as string);
@@ -55,17 +58,42 @@ const CustomizePage = () => {
 
     try {
       // Send email to yourself with order details
-      await emailjs.send(
+      const templateParams: any = {
+        from_name: `${formData.firstName} ${formData.lastName}`,
+        customer_email: formData.paypalEmail,
+        payment_method: formData.paymentMethod,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        paypal_email: formData.paypalEmail,
+        message: formData.message || "No message provided",
+        order_details: `New custom toy order from ${formData.firstName} ${formData.lastName}. Payment method: ${formData.paymentMethod}. PayPal email: ${formData.paypalEmail}. Message: ${formData.message || "No message provided"}`,
+      };
+
+      // Temporarily remove attachment to speed up email delivery
+      // TODO: Implement image upload to cloud storage and send link instead
+      // if (uploadedFile) {
+      //   const base64String = await new Promise<string>((resolve, reject) => {
+      //     const reader = new FileReader();
+      //     reader.onload = () => resolve(reader.result as string);
+      //     reader.onerror = reject;
+      //     reader.readAsDataURL(uploadedFile);
+      //   });
+
+      //   // Send the full data URL that can be used directly in img src
+      //   templateParams.attachment = base64String;
+      // }
+
+      console.log('Sending order email with params:', templateParams);
+
+      // Send email to yourself
+      const result = await emailjs.send(
         'service_3kq9rho',
         'template_2cb6uc7',
-        {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          paypalEmail: formData.paypalEmail,
-          paymentMethod: formData.paymentMethod,
-        },
+        templateParams,
         'AguvgiZG-z9aRnJhH'
       );
+
+      console.log('Order email sent successfully:', result);
 
       setStep("success");
       toast({
@@ -73,7 +101,12 @@ const CustomizePage = () => {
         description: "Check your email for order confirmation",
       });
     } catch (error) {
-      console.error('Email sending failed:', error);
+      console.error('Order email sending failed:', error);
+      console.error('Error details:', {
+        message: error.message,
+        status: error.status,
+        text: error.text
+      });
       toast({
         title: "Order Placed!",
         description: "There was an issue sending the email, but your order was recorded.",
@@ -86,7 +119,8 @@ const CustomizePage = () => {
   const resetOrder = () => {
     setStep("upload");
     setUploadedImage(null);
-    setFormData({ firstName: "", lastName: "", paypalEmail: "", paymentMethod: "paypal" });
+    setUploadedFile(null);
+    setFormData({ firstName: "", lastName: "", paypalEmail: "", message: "", paymentMethod: "paypal" });
   };
 
   return (
@@ -167,11 +201,8 @@ const CustomizePage = () => {
             <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto">
               <div className="text-center mb-8">
                 <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                  Your 3D Toy Preview ✨
+                  Your OC Preview ✨
                 </h2>
-                <p className="text-muted-foreground">
-                  Here's how your custom toy will look!
-                </p>
               </div>
 
               {/* 3D Toy Preview Mockup */}
@@ -206,7 +237,7 @@ const CustomizePage = () => {
                   <Package className="w-5 h-5 text-primary" />
                   <span className="font-semibold">Custom 3D Printed Toy</span>
                 </div>
-                <p className="text-3xl font-bold text-foreground">$200 USD</p>
+                <p className="text-3xl font-bold text-foreground">$400 USD</p>
               </div>
 
               <div className="flex gap-4">
@@ -271,6 +302,21 @@ const CustomizePage = () => {
                   </p>
                 </div>
 
+                <div className="space-y-2">
+                  <Label htmlFor="message" className="text-foreground">Message (Optional)</Label>
+                  <textarea
+                    id="message"
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    placeholder="Any special requests or notes about your OC..."
+                    className="w-full px-3 py-2 bg-background/50 border border-primary/20 rounded-lg focus:border-primary focus:outline-none resize-none"
+                    rows={3}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Tell us about your character or any specific details you'd like us to know
+                  </p>
+                </div>
+
                 <div className="space-y-3">
                   <Label className="text-foreground">Payment Method</Label>
                   <RadioGroup
@@ -300,7 +346,7 @@ const CustomizePage = () => {
                       <p className="text-foreground font-medium">Custom 3D Anime Toy</p>
                       <p className="text-muted-foreground text-sm">Based on your OC</p>
                     </div>
-                    <p className="text-xl font-bold text-foreground">$200</p>
+                    <p className="text-xl font-bold text-foreground">$400</p>
                   </div>
                 </div>
 
