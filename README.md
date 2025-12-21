@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌸 Skylar Toy Makers 🌸
+# 🌸 Skylar Toys Maker 🌸
 
 ### ✨ Create Your Perfect Anime Character Toy ✨
 
@@ -82,7 +82,7 @@ npm run build
 
 <div style="text-align: center; margin: 30px 0;">
   <a href="https://yourprettyskylar.com" style="background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 50%, #a855f7 100%); color: white; padding: 15px 30px; border-radius: 25px; text-decoration: none; font-weight: bold; font-size: 18px; display: inline-block; box-shadow: 0 8px 32px rgba(255, 159, 243, 0.4); animation: pulse 2s infinite;">
-    🌸 Visit Dreamy Toy Makers 🌸
+    🌸 Visit Skylar Toys Maker 🌸
   </a>
 </div>
 

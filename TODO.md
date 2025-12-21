@@ -1,17 +1,6 @@
-# Task: Update Customize Page and Remove Lovable References
+# TODO: Rename Website and Fix Deployment
 
-## Completed Tasks
-- [x] Analyze project structure and gather information
-- [x] Create comprehensive plan
-- [x] Get user approval for plan
-
-## Pending Tasks
-- [x] Add payment method selection to CustomizePage.tsx form
-- [x] Update success step content based on payment method
-- [x] Implement EmailJS for order email sending
-- [x] Remove lovable references from README.md
-- [x] Remove lovable references from package.json
-- [ ] Remove lovable references from vite.config.ts
-- [x] Remove lovable references from index.html
-- [x] Install EmailJS package
-- [x] Test order flow and email functionality (fixed EmailJS by removing uploadedImage parameter)
+- [x] Update index.html: Change title to "Skylar Toys Maker", update meta author and og:title to "Skylar Toys Maker"
+- [x] Update README.md: Change "Dreamy Toy Makers" to "Skylar Toys Maker"
+- [x] Build the project: Run `npm run build` to generate the `dist` folder
+- [ ] Commit and push: Add `dist` folder, commit with message "deploy build", and push to main branch
