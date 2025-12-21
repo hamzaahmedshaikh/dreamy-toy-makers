@@ -5,6 +5,11 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   base: "/",
+  build: {
+    outDir: "dist",
+    assetsDir: "assets",
+    sourcemap: false,
+  },
   server: {
     host: "::",
     port: 8080,
