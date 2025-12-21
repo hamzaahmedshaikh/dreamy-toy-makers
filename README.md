@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌸 Dreamy Toy Makers 🌸
+# 🌸 Skylar Toy Makers 🌸
 
 ### ✨ Create Your Perfect Anime Character Toy ✨
 
