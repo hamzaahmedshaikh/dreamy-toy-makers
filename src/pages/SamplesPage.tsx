@@ -1,6 +1,6 @@
 import { Sparkles } from "lucide-react";
 
-// Import all sample images
+// Import all sample images - Original 34
 import marinKitagawa from "@/assets/samples/marin-kitagawa.png";
 import zeroTwo from "@/assets/samples/zero-two.png";
 import rem from "@/assets/samples/rem.png";
@@ -36,8 +36,41 @@ import toga from "@/assets/samples/toga.png";
 import raphtalia from "@/assets/samples/raphtalia.png";
 import emilia from "@/assets/samples/emilia.png";
 
+// Import new 30 samples
+import killua from "@/assets/samples/killua.png";
+import gon from "@/assets/samples/gon.png";
+import kakashi from "@/assets/samples/kakashi.png";
+import sakura from "@/assets/samples/sakura.png";
+import light from "@/assets/samples/light.png";
+import lLawliet from "@/assets/samples/l-lawliet.png";
+import edward from "@/assets/samples/edward.png";
+import saber from "@/assets/samples/saber.png";
+import kirito from "@/assets/samples/kirito.png";
+import asuna from "@/assets/samples/asuna.png";
+import ichigo from "@/assets/samples/ichigo.png";
+import rukia from "@/assets/samples/rukia.png";
+import inuyasha from "@/assets/samples/inuyasha.png";
+import kagome from "@/assets/samples/kagome.png";
+import natsu from "@/assets/samples/natsu.png";
+import lucy from "@/assets/samples/lucy.png";
+import erza from "@/assets/samples/erza.png";
+import kaneki from "@/assets/samples/kaneki.png";
+import lelouch from "@/assets/samples/lelouch.png";
+import cc from "@/assets/samples/cc.png";
+import ryuko from "@/assets/samples/ryuko.png";
+import saitama from "@/assets/samples/saitama.png";
+import mob from "@/assets/samples/mob.png";
+import violet from "@/assets/samples/violet.png";
+import aqua from "@/assets/samples/aqua.png";
+import megumin from "@/assets/samples/megumin.png";
+import hatsuneMiku from "@/assets/samples/hatsune-miku.png";
+import yuno from "@/assets/samples/yuno.png";
+import spike from "@/assets/samples/spike.png";
+import frieren from "@/assets/samples/frieren.png";
+
 // Sample anime characters for the gallery
 const animeCharacters = [
+  // Original 34
   { id: 1, name: "Marin Kitagawa", anime: "My Dress-Up Darling", image: marinKitagawa },
   { id: 2, name: "Zero Two", anime: "Darling in the Franxx", image: zeroTwo },
   { id: 3, name: "Rem", anime: "Re:Zero", image: rem },
@@ -72,6 +105,37 @@ const animeCharacters = [
   { id: 32, name: "Toga Himiko", anime: "My Hero Academia", image: toga },
   { id: 33, name: "Raphtalia", anime: "Shield Hero", image: raphtalia },
   { id: 34, name: "Emilia", anime: "Re:Zero", image: emilia },
+  // New 30
+  { id: 35, name: "Killua Zoldyck", anime: "Hunter x Hunter", image: killua },
+  { id: 36, name: "Gon Freecss", anime: "Hunter x Hunter", image: gon },
+  { id: 37, name: "Kakashi Hatake", anime: "Naruto", image: kakashi },
+  { id: 38, name: "Sakura Haruno", anime: "Naruto", image: sakura },
+  { id: 39, name: "Light Yagami", anime: "Death Note", image: light },
+  { id: 40, name: "L Lawliet", anime: "Death Note", image: lLawliet },
+  { id: 41, name: "Edward Elric", anime: "Fullmetal Alchemist", image: edward },
+  { id: 42, name: "Saber", anime: "Fate/Stay Night", image: saber },
+  { id: 43, name: "Kirito", anime: "Sword Art Online", image: kirito },
+  { id: 44, name: "Asuna", anime: "Sword Art Online", image: asuna },
+  { id: 45, name: "Ichigo Kurosaki", anime: "Bleach", image: ichigo },
+  { id: 46, name: "Rukia Kuchiki", anime: "Bleach", image: rukia },
+  { id: 47, name: "Inuyasha", anime: "Inuyasha", image: inuyasha },
+  { id: 48, name: "Kagome", anime: "Inuyasha", image: kagome },
+  { id: 49, name: "Natsu Dragneel", anime: "Fairy Tail", image: natsu },
+  { id: 50, name: "Lucy Heartfilia", anime: "Fairy Tail", image: lucy },
+  { id: 51, name: "Erza Scarlet", anime: "Fairy Tail", image: erza },
+  { id: 52, name: "Ken Kaneki", anime: "Tokyo Ghoul", image: kaneki },
+  { id: 53, name: "Lelouch", anime: "Code Geass", image: lelouch },
+  { id: 54, name: "C.C.", anime: "Code Geass", image: cc },
+  { id: 55, name: "Ryuko Matoi", anime: "Kill la Kill", image: ryuko },
+  { id: 56, name: "Saitama", anime: "One Punch Man", image: saitama },
+  { id: 57, name: "Mob", anime: "Mob Psycho 100", image: mob },
+  { id: 58, name: "Violet Evergarden", anime: "Violet Evergarden", image: violet },
+  { id: 59, name: "Aqua", anime: "Konosuba", image: aqua },
+  { id: 60, name: "Megumin", anime: "Konosuba", image: megumin },
+  { id: 61, name: "Hatsune Miku", anime: "Vocaloid", image: hatsuneMiku },
+  { id: 62, name: "Yuno Gasai", anime: "Future Diary", image: yuno },
+  { id: 63, name: "Spike Spiegel", anime: "Cowboy Bebop", image: spike },
+  { id: 64, name: "Frieren", anime: "Frieren: Beyond Journey's End", image: frieren },
 ];
 
 const SamplesPage = () => {
@@ -82,7 +146,7 @@ const SamplesPage = () => {
         <div className="text-center mb-12 animate-slide-in-bottom">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
             <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-medium">34 Unique Designs</span>
+            <span className="text-sm font-medium">64 Unique Designs</span>
           </div>
           
           <h1 className="font-handwritten text-5xl sm:text-6xl text-foreground mb-4">
@@ -100,7 +164,7 @@ const SamplesPage = () => {
             <div
               key={character.id}
               className="group animate-scale-in"
-              style={{ animationDelay: `${index * 0.03}s` }}
+              style={{ animationDelay: `${index * 0.02}s` }}
             >
               <div className="glass-card rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 hover:shadow-glow cursor-pointer">
                 {/* Toy Preview */}
