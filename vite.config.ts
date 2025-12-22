@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
-  base: "/dreamy-toy-makers/",
+  base: "/", // Updated for a custom root domain (yourprettyskylarr.com)
   build: {
     outDir: "dist",
     assetsDir: "assets",
