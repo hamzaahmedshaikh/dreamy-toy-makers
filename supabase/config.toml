@@ -1,0 +1,4 @@
+project_id = "ewzvmthcrqoqsqbwiehy"
+
+[functions.transform-to-toy]
+verify_jwt = false
