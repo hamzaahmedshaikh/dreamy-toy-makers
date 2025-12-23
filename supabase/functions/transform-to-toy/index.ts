@@ -21,40 +21,62 @@ serve(async (req) => {
       );
     }
 
-    const HF_TOKEN = Deno.env.get("HUGGING_FACE_ACCESS_TOKEN");
-    if (!HF_TOKEN) {
-      console.error("HUGGING_FACE_ACCESS_TOKEN is not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      console.error("LOVABLE_API_KEY is not configured");
       return new Response(
         JSON.stringify({ error: "API key not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Starting toy transformation with Hugging Face...");
+    console.log("Starting toy transformation with Lovable AI...");
 
     // Create a detailed prompt for generating a chibi toy figure
-    const prompt = `Premium 3D collectible chibi anime figure, cute oversized head, small body, large expressive anime eyes, glossy plastic vinyl finish, Nendoroid Good Smile Company style, professional product photo, pure white studio background, soft ambient lighting, high quality collectible figure`;
+    const prompt = `Transform this anime character into a premium 3D collectible chibi figure. The figure should have:
+- Cute oversized head with large expressive anime eyes
+- Small chibi body proportions
+- Glossy plastic vinyl finish like Nendoroid/Good Smile Company figures
+- Professional product photo quality
+- Pure white studio background
+- Soft ambient lighting
+- High quality collectible figure appearance
+Keep the character's distinctive features, colors, and outfit while making it look like a real physical toy figure.`;
 
-    console.log("Generating image with prompt:", prompt);
+    console.log("Generating image with Lovable AI...");
 
-    // Use the new router endpoint
-    const response = await fetch(
-      "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${HF_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          inputs: prompt,
-        }),
-      }
-    );
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: prompt
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: imageBase64
+                }
+              }
+            ]
+          }
+        ],
+        modalities: ["image", "text"]
+      }),
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Hugging Face API error:", response.status, errorText);
+      console.error("Lovable AI API error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
@@ -63,10 +85,10 @@ serve(async (req) => {
         );
       }
       
-      if (response.status === 503) {
+      if (response.status === 402) {
         return new Response(
-          JSON.stringify({ error: "Model is loading. Please try again in a few seconds." }),
-          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          JSON.stringify({ error: "Usage limit reached. Please try again later." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
@@ -76,17 +98,25 @@ serve(async (req) => {
       );
     }
 
-    // Get the image as a blob
-    const imageBlob = await response.blob();
-    const arrayBuffer = await imageBlob.arrayBuffer();
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
-    const transformedImage = `data:image/png;base64,${base64}`;
+    const data = await response.json();
+    console.log("Lovable AI response received");
+
+    // Extract the generated image from the response
+    const generatedImage = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    if (!generatedImage) {
+      console.error("No image in response:", JSON.stringify(data));
+      return new Response(
+        JSON.stringify({ error: "No image was generated. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
     console.log("Image transformation successful");
 
     return new Response(
       JSON.stringify({ 
-        transformedImage,
+        transformedImage: generatedImage,
         message: "Transformation complete!"
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
