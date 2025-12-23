@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Heart, Star, Wand2 } from "lucide-react";
 import ImageLightbox from "@/components/ImageLightbox";
 
 // Import all sample images - Original 34
@@ -155,17 +155,18 @@ const SamplesPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 animate-slide-in-bottom">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
-            <Sparkles className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6 animate-bounce-gentle">
+            <Sparkles className="w-4 h-4 animate-sparkle" />
             <span className="text-sm font-medium">64 Unique Designs</span>
+            <Star className="w-4 h-4 fill-accent text-accent animate-twinkle" />
           </div>
           
           <h1 className="font-handwritten text-5xl sm:text-6xl text-foreground mb-4">
-            Sample <span className="text-gradient">Gallery</span>
+            Sample <span className="text-gradient animate-shimmer-text">Gallery</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Browse our collection of anime character 3D toys! Each one is 
-            handcrafted with love and attention to detail. Click any image to view larger.
+            handcrafted with love and attention to detail. Click any image to view larger 💕
           </p>
         </div>
 
@@ -178,25 +179,27 @@ const SamplesPage = () => {
               style={{ animationDelay: `${index * 0.02}s` }}
               onClick={() => setSelectedCharacter(character)}
             >
-              <div className="glass-card rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 hover:shadow-glow cursor-pointer">
+              <div className="glass-card rounded-2xl overflow-hidden hover:scale-105 transition-all duration-500 hover:shadow-glow cursor-pointer group-hover:animate-jelly">
                 {/* Toy Preview */}
                 <div className="aspect-square relative overflow-hidden bg-gradient-to-br from-cream/40 to-sky/20">
                   <img 
                     src={character.image} 
                     alt={`${character.name} 3D toy figure`}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   
                   {/* Shine effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   
-                  {/* Sparkle decoration */}
+                  {/* Sparkle decorations */}
                   <Sparkles className="absolute top-2 right-2 w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity animate-sparkle" />
+                  <Heart className="absolute bottom-2 left-2 w-3 h-3 text-primary fill-primary opacity-0 group-hover:opacity-100 transition-opacity animate-heartbeat" style={{ transitionDelay: "0.1s" }} />
+                  <Star className="absolute top-2 left-2 w-3 h-3 text-accent fill-accent opacity-0 group-hover:opacity-100 transition-opacity animate-twinkle" style={{ transitionDelay: "0.2s" }} />
                 </div>
                 
                 {/* Character Info */}
                 <div className="p-3 text-center">
-                  <h3 className="font-semibold text-foreground text-sm truncate">
+                  <h3 className="font-semibold text-foreground text-sm truncate group-hover:text-primary transition-colors">
                     {character.name}
                   </h3>
                   <p className="text-muted-foreground text-xs truncate">
@@ -210,18 +213,24 @@ const SamplesPage = () => {
 
         {/* Call to Action */}
         <div className="text-center mt-16 animate-slide-in-bottom" style={{ animationDelay: "1s" }}>
-          <div className="glass-card rounded-3xl p-8 inline-block">
+          <div className="glass-card rounded-3xl p-8 inline-block hover:shadow-glow transition-all duration-500 group">
+            <div className="flex justify-center gap-2 mb-4">
+              <Heart className="w-5 h-5 text-primary fill-primary animate-heartbeat" />
+              <Sparkles className="w-6 h-6 text-primary animate-sparkle" />
+              <Heart className="w-5 h-5 text-primary fill-primary animate-heartbeat" style={{ animationDelay: "0.3s" }} />
+            </div>
             <h2 className="font-handwritten text-3xl text-foreground mb-4">
               Want your own custom toy?
             </h2>
             <p className="text-muted-foreground mb-6">
-              Upload your OC and we'll create a unique 3D toy just for you!
+              Upload your OC and we'll create a unique 3D toy just for you! ✨
             </p>
             <a href="/customize">
-              <button className="bg-gradient-to-r from-rose to-rose-dark text-primary-foreground shadow-glow hover:shadow-[0_0_60px_hsl(340_65%_65%_/_0.5)] hover:scale-110 active:scale-100 font-bold text-lg px-8 py-4 rounded-2xl transition-all duration-300">
+              <button className="bg-gradient-to-r from-rose to-rose-dark text-primary-foreground shadow-glow hover:shadow-[0_0_60px_hsl(340_65%_65%_/_0.5)] hover:scale-110 active:scale-100 font-bold text-lg px-8 py-4 rounded-2xl transition-all duration-300 group/btn">
                 <span className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" />
+                  <Wand2 className="w-5 h-5 group-hover/btn:animate-wiggle" />
                   Create Your Custom Toy
+                  <Sparkles className="w-5 h-5 group-hover/btn:animate-sparkle" />
                 </span>
               </button>
             </a>
