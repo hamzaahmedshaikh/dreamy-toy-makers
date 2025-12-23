@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Heart, Star, ArrowRight } from "lucide-react";
+import { Sparkles, Heart, Star, ArrowRight, Shield, Truck, Award } from "lucide-react";
+import TestimonialsCarousel from "@/components/TestimonialsCarousel";
 
 const HomePage = () => {
   return (
@@ -26,7 +27,7 @@ const HomePage = () => {
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-slide-in-bottom leading-relaxed" style={{ animationDelay: "0.2s" }}>
             Transform your favorite Original Character into an adorable, 
             high-quality 3D printed collectible toy. Each piece is uniquely 
-            crafted to capture every detail of your character! ✨
+            crafted to capture every detail of your character!
           </p>
 
           {/* Price Tag */}
@@ -34,8 +35,8 @@ const HomePage = () => {
             <div className="flex items-center gap-3">
               <Star className="w-6 h-6 text-accent fill-accent" />
               <div className="text-left">
-                <p className="text-sm text-muted-foreground">Starting at just</p>
-                <p className="text-3xl font-bold text-foreground">$400 <span className="text-base font-normal text-muted-foreground">USD</span></p>
+                <p className="text-sm text-muted-foreground">Premium Collectible</p>
+                <p className="text-3xl font-bold text-foreground">$1,299 <span className="text-base font-normal text-muted-foreground">USD</span></p>
               </div>
               <Star className="w-6 h-6 text-accent fill-accent" />
             </div>
@@ -79,8 +80,8 @@ const HomePage = () => {
             },
             {
               icon: Sparkles,
-              title: "Custom 3D Model",
-              description: "We create a unique 3D model based on your character",
+              title: "AI-Powered Preview",
+              description: "See exactly how your character will look as a 3D toy before ordering",
             },
             {
               icon: Star,
@@ -102,13 +103,57 @@ const HomePage = () => {
           ))}
         </div>
 
+        {/* Why Choose Us Section */}
+        <div className="mb-16 animate-slide-in-bottom" style={{ animationDelay: "0.8s" }}>
+          <h2 className="font-handwritten text-4xl text-foreground text-center mb-8">
+            Why Collectors <span className="text-gradient">Choose Us</span>
+          </h2>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {[
+              {
+                icon: Award,
+                title: "Museum-Grade Quality",
+                description: "Premium PVC material with hand-painted details that last a lifetime"
+              },
+              {
+                icon: Shield,
+                title: "Satisfaction Guaranteed",
+                description: "Not happy with your toy? We'll remake it or refund you completely"
+              },
+              {
+                icon: Truck,
+                title: "Worldwide Shipping",
+                description: "Insured shipping to 100+ countries with tracking included"
+              }
+            ].map((item, index) => (
+              <div key={item.title} className="flex items-start gap-4 glass-card rounded-2xl p-6">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">{item.title}</h3>
+                  <p className="text-sm text-muted-foreground">{item.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Testimonials Section */}
+        <div className="mb-16 animate-slide-in-bottom" style={{ animationDelay: "0.85s" }}>
+          <h2 className="font-handwritten text-4xl text-foreground text-center mb-8">
+            What Our <span className="text-gradient">Customers Say</span>
+          </h2>
+          <TestimonialsCarousel />
+        </div>
+
         {/* Sample Preview CTA */}
         <div className="glass-card rounded-3xl p-8 text-center animate-slide-in-bottom" style={{ animationDelay: "0.9s" }}>
           <h2 className="font-handwritten text-4xl text-foreground mb-4">
             Curious what we can create?
           </h2>
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-            Check out our gallery of 34 anime character samples to see the quality 
+            Check out our gallery of 64 anime character samples to see the quality 
             and style of our 3D toys!
           </p>
           <Link to="/samples">

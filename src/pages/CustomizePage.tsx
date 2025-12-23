@@ -332,7 +332,7 @@ const CustomizePage = () => {
                       <Package className="w-5 h-5 text-primary" />
                       <span className="font-semibold">Custom 3D Printed Toy</span>
                     </div>
-                    <p className="text-3xl font-bold text-foreground">$400 USD</p>
+                    <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Your final toy will look just like the AI preview!
                     </p>
