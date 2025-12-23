@@ -6,7 +6,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -31,10 +30,9 @@ serve(async (req) => {
       );
     }
 
-    console.log("Starting AI transformation...");
+    console.log("Starting premium 3D toy transformation...");
     console.log("Image base64 length:", imageBase64.length);
 
-    // Use Gemini's image generation model to transform the image
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -49,17 +47,25 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: `Generate a high-quality 3D chibi toy figure based on this anime character. Requirements:
-• Chibi proportions: oversized head (about 1/2 of body height), small cute body
-• Glossy plastic/vinyl material with subtle shine highlights
-• Soft pastel studio lighting, clean white or very light gradient background
-• Standing pose on a small round display base
-• Keep the character's exact hair color, hairstyle, eye color, and outfit details
-• Kawaii/cute aesthetic with slightly rosy cheeks
-• Professional product photography style like Nendoroid or Pop Mart figures
-• High detail on face, hair texture, and clothing folds
-• Smooth cel-shaded look with soft shadows
-The final image should look like an actual collectible figure photo.`
+                text: `Transform this character into a PREMIUM COLLECTIBLE 3D CHIBI FIGURE exactly like Nendoroid, Good Smile Company, or Pop Mart figures.
+
+CRITICAL - DO NOT CHANGE THE BACKGROUND:
+- Keep the EXACT same background from the original image
+- DO NOT add any new background, studio setting, or gradient
+- DO NOT remove or modify the existing background in any way
+- Only transform the CHARACTER/PERSON into a 3D toy figure
+
+3D FIGURE REQUIREMENTS:
+• Chibi proportions: oversized cute head (about 1/2 to 1/3 of total body height), small adorable body
+• Premium glossy plastic/vinyl material with realistic subsurface scattering and shine highlights
+• Ultra-detailed face with large expressive anime eyes, subtle blush marks
+• Keep ALL original features: exact hair color, hairstyle, eye color, outfit, accessories
+• High-end collectible figure quality with fine sculpted details on clothing folds and textures
+• Soft ambient lighting that makes the figure pop naturally
+• Smooth cel-shaded aesthetic with professional soft shadows
+• The figure should look like a $100+ premium Japanese collectible
+
+The result should look like an actual product photo of a high-end collectible figure, with the SAME background as the original image.`
               },
               {
                 type: "image_url",
@@ -101,7 +107,6 @@ The final image should look like an actual collectible figure photo.`
     const data = await response.json();
     console.log("AI response received");
 
-    // Extract the generated image from the response
     const generatedImage = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
     if (!generatedImage) {
