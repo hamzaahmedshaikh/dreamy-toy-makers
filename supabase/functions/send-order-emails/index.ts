@@ -81,7 +81,7 @@ serve(async (req: Request): Promise<Response> => {
           <p style="color: #666; margin: 8px 0;"><strong>Customer Name:</strong> ${customerName}</p>
           <p style="color: #666; margin: 8px 0;"><strong>Customer Email:</strong> ${customerEmail}</p>
           <p style="color: #666; margin: 8px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $489 USD</p>
+          <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $1,299 USD</p>
           <p style="color: #666; margin: 8px 0;"><strong>Message:</strong> ${message || "No message provided"}</p>
         </div>
 
@@ -114,7 +114,7 @@ serve(async (req: Request): Promise<Response> => {
           <div style="background: white; padding: 24px; border-radius: 12px; margin: 24px 0; border: 1px solid #f0e0e5;">
             <h2 style="color: #333; font-size: 18px; margin-bottom: 16px;">Order Confirmation</h2>
             <p style="color: #666; margin: 8px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
-            <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $489 USD</p>
+            <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $1,299 USD</p>
             <p style="color: #666; margin: 8px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
           </div>
 
