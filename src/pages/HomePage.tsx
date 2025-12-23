@@ -2,15 +2,17 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Heart, Star, ArrowRight, Shield, Truck, Award, Wand2, Gift, Zap } from "lucide-react";
 import TestimonialsCarousel from "@/components/TestimonialsCarousel";
+import { useSoundEffect } from "@/hooks/useSoundEffect";
 
 const HomePage = () => {
+  const { playSound } = useSoundEffect();
   return (
     <div className="min-h-screen pt-24 pb-8 px-4 watercolor-bg">
       {/* Hero Section */}
       <section className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           {/* Animated Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-8 animate-slide-in-bottom animate-bounce-gentle">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-8 animate-slide-in-bottom">
             <Sparkles className="w-4 h-4 animate-sparkle" />
             <span className="text-sm font-medium">Handcrafted with Love</span>
             <Heart className="w-4 h-4 fill-primary animate-heartbeat" />
@@ -31,7 +33,7 @@ const HomePage = () => {
           </p>
 
           {/* Price Tag */}
-          <div className="inline-block glass-card rounded-2xl px-6 py-4 mb-8 animate-slide-in-bottom animate-pulse-soft hover:shadow-glow transition-all duration-300 hover:scale-105" style={{ animationDelay: "0.3s" }}>
+          <div className="inline-block glass-card rounded-2xl px-6 py-4 mb-8 animate-slide-in-bottom hover:shadow-glow transition-all duration-300 hover:scale-105" style={{ animationDelay: "0.3s" }}>
             <div className="flex items-center gap-3">
               <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
               <div className="text-left">
@@ -45,8 +47,8 @@ const HomePage = () => {
           {/* CTA Button */}
           <div className="animate-slide-in-bottom" style={{ animationDelay: "0.4s" }}>
             <Link to="/customize">
-              <Button variant="hero" size="xl" className="group animate-bounce-gentle hover:animate-none">
-                <Wand2 className="w-5 h-5 group-hover:animate-wiggle" />
+              <Button variant="hero" size="xl" className="group" onClick={playSound}>
+                <Wand2 className="w-5 h-5" />
                 Place Your Order Now
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -64,7 +66,7 @@ const HomePage = () => {
                 key={badge.text} 
                 className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group cursor-default"
               >
-                <badge.icon className={`w-4 h-4 text-primary group-hover:animate-bounce-gentle ${badge.fill ? 'fill-primary' : ''}`} />
+                <badge.icon className={`w-4 h-4 text-primary ${badge.fill ? 'fill-primary' : ''}`} />
                 <span className="text-sm">{badge.text}</span>
               </div>
             ))}
@@ -98,8 +100,8 @@ const HomePage = () => {
               className="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-all duration-500 animate-slide-in-bottom hover:shadow-glow group"
               style={{ animationDelay: `${0.6 + index * 0.1}s` }}
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:animate-bounce-gentle group-hover:bg-primary/20 transition-colors">
-                <feature.icon className="w-8 h-8 text-primary group-hover:animate-wiggle" />
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
+                <feature.icon className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-handwritten text-2xl text-foreground mb-2">{feature.title}</h3>
               <p className="text-muted-foreground">{feature.description}</p>
@@ -141,7 +143,7 @@ const HomePage = () => {
                 className="flex items-start gap-4 glass-card rounded-2xl p-6 hover:shadow-glow transition-all duration-300 hover:scale-[1.02] group animate-fade-in-up"
                 style={{ animationDelay: `${0.85 + index * 0.1}s` }}
               >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:animate-bounce-gentle group-hover:bg-primary/20 transition-colors">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
                   <item.icon className="w-6 h-6 text-primary" />
                 </div>
                 <div>

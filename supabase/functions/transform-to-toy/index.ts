@@ -49,11 +49,11 @@ serve(async (req) => {
                 type: "text",
                 text: `Transform this character into a PREMIUM COLLECTIBLE 3D CHIBI FIGURE exactly like Nendoroid, Good Smile Company, or Pop Mart figures.
 
-CRITICAL - DO NOT CHANGE THE BACKGROUND:
-- Keep the EXACT same background from the original image
-- DO NOT add any new background, studio setting, or gradient
-- DO NOT remove or modify the existing background in any way
-- Only transform the CHARACTER/PERSON into a 3D toy figure
+CRITICAL - BACKGROUND MUST BE PURE WHITE:
+- Replace the background with a CLEAN, PURE WHITE (#FFFFFF) background
+- The background should be completely white like a professional product photography studio
+- NO gradients, NO shadows on background, NO colored backgrounds - ONLY pure white
+- This is for a product catalog, so the white background is essential
 
 3D FIGURE REQUIREMENTS:
 • Chibi proportions: oversized cute head (about 1/2 to 1/3 of total body height), small adorable body
@@ -61,11 +61,11 @@ CRITICAL - DO NOT CHANGE THE BACKGROUND:
 • Ultra-detailed face with large expressive anime eyes, subtle blush marks
 • Keep ALL original features: exact hair color, hairstyle, eye color, outfit, accessories
 • High-end collectible figure quality with fine sculpted details on clothing folds and textures
-• Soft ambient lighting that makes the figure pop naturally
-• Smooth cel-shaded aesthetic with professional soft shadows
+• Soft ambient lighting that makes the figure pop naturally against the white background
+• Smooth cel-shaded aesthetic with professional soft shadows ON THE FIGURE ONLY
 • The figure should look like a $100+ premium Japanese collectible
 
-The result should look like an actual product photo of a high-end collectible figure, with the SAME background as the original image.`
+The result should look like an actual product photo of a high-end collectible figure on a PURE WHITE background like in an official product catalog.`
               },
               {
                 type: "image_url",
