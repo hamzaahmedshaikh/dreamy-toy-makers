@@ -1,8 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "https://esm.sh/resend@4.0.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,7 +14,6 @@ interface OrderEmailRequest {
   message: string;
   referenceImageBase64: string;
   transformedImageBase64: string;
-  sendCustomer?: boolean;
 }
 
 // Generate a unique order number
@@ -25,6 +21,44 @@ function generateOrderNumber(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substring(2, 6).toUpperCase();
   return `SKY-${timestamp}-${random}`;
+}
+
+// Send email via EmailJS REST API
+async function sendEmailJS(templateId: string, templateParams: Record<string, string>): Promise<{ success: boolean; error?: string }> {
+  const serviceId = Deno.env.get("EMAILJS_SERVICE_ID");
+  const publicKey = Deno.env.get("EMAILJS_PUBLIC_KEY");
+  const privateKey = Deno.env.get("EMAILJS_PRIVATE_KEY");
+
+  if (!serviceId || !publicKey) {
+    return { success: false, error: "EmailJS credentials not configured" };
+  }
+
+  try {
+    const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        service_id: serviceId,
+        template_id: templateId,
+        user_id: publicKey,
+        accessToken: privateKey,
+        template_params: templateParams,
+      }),
+    });
+
+    if (response.ok) {
+      return { success: true };
+    } else {
+      const errorText = await response.text();
+      console.error("EmailJS error:", errorText);
+      return { success: false, error: errorText };
+    }
+  } catch (error) {
+    console.error("EmailJS fetch error:", error);
+    return { success: false, error: error instanceof Error ? error.message : "Unknown error" };
+  }
 }
 
 serve(async (req: Request): Promise<Response> => {
@@ -41,7 +75,6 @@ serve(async (req: Request): Promise<Response> => {
       message,
       referenceImageBase64,
       transformedImageBase64,
-      sendCustomer,
     }: OrderEmailRequest = await req.json();
 
     console.log("Received order email request for:", customerEmail);
@@ -59,32 +92,40 @@ serve(async (req: Request): Promise<Response> => {
 
     // Upload images to storage
     if (referenceImageBase64) {
-      const base64Data = referenceImageBase64.replace(/^data:image\/\w+;base64,/, "");
-      const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-      const fileName = `${orderNumber}-reference.png`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from("order-images")
-        .upload(fileName, imageBuffer, { contentType: "image/png" });
-      
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from("order-images").getPublicUrl(fileName);
-        referenceImageUrl = urlData.publicUrl;
+      try {
+        const base64Data = referenceImageBase64.replace(/^data:image\/\w+;base64,/, "");
+        const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        const fileName = `${orderNumber}-reference.png`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from("order-images")
+          .upload(fileName, imageBuffer, { contentType: "image/png" });
+        
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from("order-images").getPublicUrl(fileName);
+          referenceImageUrl = urlData.publicUrl;
+        }
+      } catch (e) {
+        console.error("Error uploading reference image:", e);
       }
     }
 
     if (transformedImageBase64) {
-      const base64Data = transformedImageBase64.replace(/^data:image\/\w+;base64,/, "");
-      const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-      const fileName = `${orderNumber}-transformed.png`;
-      
-      const { error: uploadError } = await supabase.storage
-        .from("order-images")
-        .upload(fileName, imageBuffer, { contentType: "image/png" });
-      
-      if (!uploadError) {
-        const { data: urlData } = supabase.storage.from("order-images").getPublicUrl(fileName);
-        transformedImageUrl = urlData.publicUrl;
+      try {
+        const base64Data = transformedImageBase64.replace(/^data:image\/\w+;base64,/, "");
+        const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        const fileName = `${orderNumber}-transformed.png`;
+        
+        const { error: uploadError } = await supabase.storage
+          .from("order-images")
+          .upload(fileName, imageBuffer, { contentType: "image/png" });
+        
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage.from("order-images").getPublicUrl(fileName);
+          transformedImageUrl = urlData.publicUrl;
+        }
+      } catch (e) {
+        console.error("Error uploading transformed image:", e);
       }
     }
 
@@ -108,136 +149,39 @@ serve(async (req: Request): Promise<Response> => {
       console.log("Order saved to database:", orderNumber);
     }
 
-    // Prepare attachments for admin email
-    const attachments: Array<{ filename: string; content: string }> = [];
-
-    if (referenceImageBase64) {
-      const base64Data = referenceImageBase64.replace(/^data:image\/\w+;base64,/, "");
-      attachments.push({
-        filename: "reference-image.png",
-        content: base64Data,
-      });
-    }
-
-    if (transformedImageBase64) {
-      const base64Data = transformedImageBase64.replace(/^data:image\/\w+;base64,/, "");
-      attachments.push({
-        filename: "toy-preview.png",
-        content: base64Data,
-      });
-    }
-
-    // Email to Skylar (admin) - personal voice
-    const adminEmailHtml = `
-      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #fdf8f5; padding: 40px; border-radius: 16px;">
-        <h1 style="color: #d4778c; font-size: 28px; margin-bottom: 20px;">New Order! 🎉</h1>
-        
-        <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #f0e0e5;">
-          <h2 style="color: #333; font-size: 18px; margin-bottom: 16px;">Order Details</h2>
-          <p style="color: #666; margin: 8px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Customer:</strong> ${customerName}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Email:</strong> ${customerEmail}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Payment:</strong> ${paymentMethod}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $489 USD</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Notes:</strong> ${message || "None"}</p>
-        </div>
-
-        <p style="color: #666; font-size: 14px;">Reference images attached.</p>
-      </div>
-    `;
-
-    console.log("Sending admin email...");
-
-    const adminEmailResponse = await resend.emails.send({
-      from: "Orders <onboarding@resend.dev>",
-      to: ["whatsupskylar@gmail.com"],
-      subject: `New Order #${orderNumber} from ${customerName}`,
-      html: adminEmailHtml,
-      attachments,
+    // Send admin notification email (template_2cb6uc7)
+    console.log("Sending admin email via EmailJS...");
+    const adminResult = await sendEmailJS("template_2cb6uc7", {
+      order_number: orderNumber,
+      customer_name: customerName,
+      customer_email: customerEmail,
+      payment_method: paymentMethod,
+      message: message || "No special requests",
+      reference_image_url: referenceImageUrl || "",
+      transformed_image_url: transformedImageUrl || "",
+      amount: "$489 USD",
     });
+    console.log("Admin email result:", adminResult);
 
-    console.log("Admin email sent:", adminEmailResponse);
-
-    // Customer confirmation email - Skylar's personal voice
-    if (sendCustomer !== false) {
-      const customerEmailHtml = `
-        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #fdf8f5; padding: 40px; border-radius: 16px;">
-          <h1 style="color: #d4778c; font-size: 28px; margin-bottom: 20px;">Hey ${firstName}! I got your order 💕</h1>
-          
-          <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            Thanks so much for ordering a custom toy! I'm super excited to start working on bringing your character to life.
-          </p>
-
-          <div style="background: white; padding: 24px; border-radius: 12px; margin: 24px 0; border: 1px solid #f0e0e5;">
-            <h2 style="color: #333; font-size: 18px; margin-bottom: 16px;">Your Order</h2>
-            <p style="color: #666; margin: 8px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
-            <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $489 USD</p>
-            <p style="color: #666; margin: 8px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
-          </div>
-
-          <div style="background: #fff5f7; padding: 20px; border-radius: 12px; margin: 24px 0;">
-            <h3 style="color: #d4778c; font-size: 16px; margin-bottom: 12px;">What happens next?</h3>
-            <ol style="color: #666; padding-left: 20px; line-height: 1.8;">
-              ${paymentMethod === "paypal" ? `
-                <li>Check your PayPal for my payment request</li>
-                <li>Complete the payment</li>
-                <li>DM me on X (@whatsupskylar) with your confirmation</li>
-              ` : `
-                <li>DM me on X @whatsupskylar to arrange crypto payment</li>
-              `}
-              <li>I'll start crafting your custom toy!</li>
-              <li>I'll send you updates as I work on it</li>
-            </ol>
-          </div>
-
-          <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            Got questions? Just hit me up on X:
-            <a href="https://x.com/whatsupskylar" style="color: #d4778c;">@whatsupskylar</a>
-          </p>
-
-          <p style="color: #666; font-size: 16px; margin-top: 24px;">
-            Can't wait to make this for you!
-          </p>
-          
-          <p style="color: #d4778c; font-size: 18px; margin-top: 24px;">
-            — Skylar 💕
-          </p>
-
-          <hr style="border: none; border-top: 1px solid #f0e0e5; margin: 32px 0;" />
-          
-          <p style="color: #999; font-size: 11px; line-height: 1.6;">
-            Shipping is calculated separately based on your location and isn't included in the order total.
-          </p>
-        </div>
-      `;
-
-      console.log("Sending customer confirmation email...");
-
-      const customerEmailResponse = await resend.emails.send({
-        from: "Skylar <onboarding@resend.dev>",
-        to: [customerEmail],
-        subject: `Got your order! #${orderNumber} 💕`,
-        html: customerEmailHtml,
-      });
-
-      console.log("Customer email sent:", customerEmailResponse);
-
-      return new Response(
-        JSON.stringify({
-          success: true,
-          orderNumber,
-          adminEmail: adminEmailResponse,
-          customerEmail: customerEmailResponse,
-        }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
-      );
-    }
+    // Send customer confirmation email (template_kpvs4u7)
+    console.log("Sending customer email via EmailJS...");
+    const customerResult = await sendEmailJS("template_kpvs4u7", {
+      to_email: customerEmail,
+      to_name: firstName,
+      customer_name: firstName,
+      order_number: orderNumber,
+      payment_method: paymentMethod,
+      amount: "$489 USD",
+    });
+    console.log("Customer email result:", customerResult);
 
     return new Response(
-      JSON.stringify({ success: true, orderNumber, adminEmail: adminEmailResponse }),
+      JSON.stringify({
+        success: true,
+        orderNumber,
+        adminEmailSent: adminResult.success,
+        customerEmailSent: customerResult.success,
+      }),
       {
         status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
