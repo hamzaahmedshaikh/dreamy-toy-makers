@@ -1,1 +1,11 @@
+<<<<<<< HEAD
 project_id = "dvuftwhcytiydutiityh"
+=======
+project_id = "ewzvmthcrqoqsqbwiehy"
+
+[functions.transform-to-toy]
+verify_jwt = false
+
+[functions.send-order-emails]
+verify_jwt = false
+>>>>>>> b8308bf51894ceee6e04789232fd2f7bf5325eac
