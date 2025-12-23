@@ -1,1 +1,8 @@
+<<<<<<< HEAD
 project_id = "wydgyjuinshdvzmgdbfe"
+=======
+project_id = "ewzvmthcrqoqsqbwiehy"
+
+[functions.transform-to-toy]
+verify_jwt = false
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a

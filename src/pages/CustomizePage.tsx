@@ -1,11 +1,20 @@
+<<<<<<< HEAD
 import { useState, useCallback, useEffect } from "react";
+=======
+import { useState, useCallback } from "react";
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, Sparkles, CheckCircle, Twitter, Heart, Package, ArrowRight, Image, Loader2, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+<<<<<<< HEAD
 import emailjs from "@emailjs/browser";
+=======
+import emailjs from '@emailjs/browser';
+import { supabase } from "@/integrations/supabase/client";
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 
 type OrderStep = "upload" | "transforming" | "preview" | "form" | "success";
 
@@ -24,10 +33,13 @@ const CustomizePage = () => {
   });
   const { toast } = useToast();
 
+<<<<<<< HEAD
   useEffect(() => {
     emailjs.init("AguvgiZG-z9aRnJhH");
   }, []);
 
+=======
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
   const transformToToy = async (imageBase64: string) => {
     setIsTransforming(true);
     setStep("transforming");
@@ -57,8 +69,13 @@ const CustomizePage = () => {
         setTransformedImage(data.transformedImage);
         setStep("preview");
         toast({
+<<<<<<< HEAD
           title: "Preview Ready! ✨",
           description: "Your OC has been transformed into a 3D toy preview!",
+=======
+          title: "Transformation Complete! ✨",
+          description: "Your OC has been transformed into a 3D toy!",
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         });
       } else {
         throw new Error("No transformed image received");
@@ -66,7 +83,11 @@ const CustomizePage = () => {
     } catch (error) {
       console.error("Transformation error:", error);
       toast({
+<<<<<<< HEAD
         title: "Preview Failed",
+=======
+        title: "Transformation Failed",
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
@@ -93,7 +114,11 @@ const CustomizePage = () => {
       reader.onloadend = () => {
         const base64 = reader.result as string;
         setUploadedImage(base64);
+<<<<<<< HEAD
         // Automatically generate preview
+=======
+        // Automatically start AI transformation
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         transformToToy(base64);
       };
       reader.readAsDataURL(file);
@@ -113,6 +138,7 @@ const CustomizePage = () => {
     }
 
     try {
+<<<<<<< HEAD
       // Generate order number
       const timestamp = Date.now().toString(36).toUpperCase();
       const random = Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -179,10 +205,36 @@ const CustomizePage = () => {
       } catch (err) {
         console.warn("Backend email failed (attachments):", err);
       }
+=======
+      // Send email to yourself with order details
+      const templateParams: Record<string, string> = {
+        from_name: `${formData.firstName} ${formData.lastName}`,
+        customer_email: formData.paypalEmail,
+        payment_method: formData.paymentMethod,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        paypal_email: formData.paypalEmail,
+        message: formData.message || "No message provided",
+        order_details: `New custom toy order from ${formData.firstName} ${formData.lastName}. Payment method: ${formData.paymentMethod}. PayPal email: ${formData.paypalEmail}. Message: ${formData.message || "No message provided"}`,
+      };
+
+      console.log('Sending order email with params:', templateParams);
+
+      // Send email to yourself
+      const result = await emailjs.send(
+        'service_3kq9rho',
+        'template_2cb6uc7',
+        templateParams,
+        'AguvgiZG-z9aRnJhH'
+      );
+
+      console.log('Order email sent successfully:', result);
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 
       setStep("success");
       toast({
         title: "Order Placed! 🎉",
+<<<<<<< HEAD
         description: `Order #${orderNumber} confirmed! Check your email.`,
       });
     } catch (error: any) {
@@ -202,6 +254,18 @@ const CustomizePage = () => {
           errInfo.text || errInfo.message || "Email provider error. Please message me on X to confirm.",
         variant: "destructive",
       });
+=======
+        description: "Check your email for order confirmation",
+      });
+    } catch (error) {
+      console.error('Order email sending failed:', error);
+      toast({
+        title: "Order Placed!",
+        description: "There was an issue sending the email, but your order was recorded.",
+        variant: "destructive",
+      });
+      setStep("success");
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
     }
   };
 
@@ -218,6 +282,7 @@ const CustomizePage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 animate-slide-in-bottom">
+<<<<<<< HEAD
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Upload your anime OC and my AI will transform it into a 3D toy! ✨
           </p>
@@ -226,12 +291,15 @@ const CustomizePage = () => {
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
           </p>
 =======
+=======
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
           <h1 className="font-handwritten text-5xl sm:text-6xl text-foreground mb-4">
             Create Your <span className="text-gradient">Custom Toy</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Upload your anime OC and my AI will transform it into a 3D toy! ✨
           </p>
+<<<<<<< HEAD
 =======
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Upload your anime OC and my AI will transform it into a 3D toy! ✨
@@ -240,11 +308,17 @@ const CustomizePage = () => {
             Upload your anime OC and my AI will transform it into a 3D toy! ✨
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
           </p>
+=======
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center gap-4 mb-12 animate-slide-in-bottom" style={{ animationDelay: "0.1s" }}>
+<<<<<<< HEAD
           {["Upload", "Creating", "Preview", "Done"].map((label, index) => {
+=======
+          {["Upload", "AI Magic", "Preview", "Done"].map((label, index) => {
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
             const stepMapping = ["upload", "transforming", "preview", "success"];
             const currentStepIndex = step === "form" ? 2 : stepMapping.indexOf(step);
             const isActive = index <= currentStepIndex;
@@ -290,8 +364,13 @@ const CustomizePage = () => {
               </h2>
               <p className="text-muted-foreground mb-8">
 <<<<<<< HEAD
+<<<<<<< HEAD
                 Share your anime original character image and my AI will transform it 
                 into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
+=======
+                Share your anime original character image and my AI will transform it 
+                into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 =======
                 Share your anime original character image and my AI will transform it 
                 into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
@@ -315,12 +394,19 @@ const CustomizePage = () => {
               <div className="mt-8 p-4 bg-primary/5 rounded-xl">
                 <div className="flex items-center justify-center gap-2 text-primary mb-2">
                   <Wand2 className="w-5 h-5" />
+<<<<<<< HEAD
                   <span className="font-semibold">Instant Preview</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
 <<<<<<< HEAD
                   My AI will automatically convert your character into a cute chibi 3D toy style!
 =======
+                  My AI will automatically convert your character into a cute chibi 3D toy style!
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
+=======
+                  <span className="font-semibold">AI-Powered Transformation</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
                   My AI will automatically convert your character into a cute chibi 3D toy style!
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                 </p>
@@ -351,12 +437,19 @@ const CustomizePage = () => {
               </div>
               
               <h2 className="font-handwritten text-3xl text-foreground mb-4">
+<<<<<<< HEAD
                 Creating Your Preview ✨
               </h2>
               <p className="text-muted-foreground mb-4">
 <<<<<<< HEAD
                 My AI is transforming your OC into a cute 3D toy...
 =======
+                My AI is transforming your OC into a cute 3D toy...
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
+=======
+                AI Magic in Progress ✨
+              </h2>
+              <p className="text-muted-foreground mb-4">
                 My AI is transforming your OC into a cute 3D toy...
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
               </p>
@@ -376,7 +469,11 @@ const CustomizePage = () => {
                       Your 3D Toy Preview ✨
                     </h2>
                     <p className="text-muted-foreground">
+<<<<<<< HEAD
                       Here is how your custom toy will look!
+=======
+                      AI-generated preview of your custom toy!
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                     </p>
                   </div>
 
@@ -417,12 +514,18 @@ const CustomizePage = () => {
                       <span className="font-semibold">Custom 3D Printed Toy</span>
                     </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
 =======
                     <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                     <p className="text-sm text-muted-foreground mt-1">
                       Your final toy will look just like the preview!
+=======
+                    <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Your final toy will look just like the AI preview!
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                     </p>
                   </div>
 
@@ -482,7 +585,11 @@ const CustomizePage = () => {
                         className="bg-background/50 border-primary/20 focus:border-primary"
                       />
                       <p className="text-xs text-muted-foreground">
+<<<<<<< HEAD
                         I will send the payment request to this email
+=======
+                        We'll send the payment request to this email
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                       </p>
                     </div>
 
@@ -498,7 +605,11 @@ const CustomizePage = () => {
                       />
                       <p className="text-xs text-muted-foreground">
 <<<<<<< HEAD
+<<<<<<< HEAD
                         Tell me about your character or any specific details you'd like me to know
+=======
+                        Tell me about your character or any specific details you'd like me to know
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 =======
                         Tell me about your character or any specific details you'd like me to know
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
@@ -523,7 +634,11 @@ const CustomizePage = () => {
                       </RadioGroup>
                     </div>
 
+<<<<<<< HEAD
                     {/* Order Summary */}
+=======
+                    {/* Order Summary with AI preview */}
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                     <div className="bg-primary/5 rounded-2xl p-4">
                       <h3 className="font-semibold text-foreground mb-2">Order Summary</h3>
                       <div className="flex items-center gap-3">
@@ -534,11 +649,17 @@ const CustomizePage = () => {
                         />
                         <div className="flex-1">
                           <p className="text-foreground font-medium">Custom 3D Anime Toy</p>
+<<<<<<< HEAD
                           <p className="text-muted-foreground text-sm">Handcrafted by Skylar</p>
                         </div>
 <<<<<<< HEAD
                         <p className="text-xl font-bold text-foreground">$1,299</p>
 =======
+                        <p className="text-xl font-bold text-foreground">$1,299</p>
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
+=======
+                          <p className="text-muted-foreground text-sm">AI-Generated Design</p>
+                        </div>
                         <p className="text-xl font-bold text-foreground">$1,299</p>
 >>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                       </div>
@@ -584,7 +705,11 @@ const CustomizePage = () => {
               {formData.paymentMethod === "paypal" ? (
                 <>
                   <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
+<<<<<<< HEAD
                     Thank you! You will receive a payment request on PayPal. Once you complete the payment, send me the confirmation on X.
+=======
+                    Order placed, you'll receive a payment request on PayPal, accept it and send the payment proof on this X account.
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                   </p>
 
                   <div className="bg-primary/5 rounded-2xl p-6 mb-8">
@@ -592,7 +717,11 @@ const CustomizePage = () => {
                     <ol className="text-left space-y-3 text-muted-foreground">
                       <li className="flex items-start gap-3">
                         <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">1</span>
+<<<<<<< HEAD
                         <span>Check your PayPal email for my payment request</span>
+=======
+                        <span>Check your PayPal email for the payment request</span>
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">2</span>
@@ -624,7 +753,11 @@ const CustomizePage = () => {
                 className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-4 rounded-2xl font-semibold hover:opacity-90 transition-opacity mb-6"
               >
                 <Twitter className="w-5 h-5" />
+<<<<<<< HEAD
                 Contact Me on X @whatsupskylar
+=======
+                Contact on X @whatsupskylar
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
               </a>
 
               <div className="mt-8">
@@ -641,4 +774,8 @@ const CustomizePage = () => {
   );
 };
 
+<<<<<<< HEAD
 export default CustomizePage;
+=======
+export default CustomizePage;
+>>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
