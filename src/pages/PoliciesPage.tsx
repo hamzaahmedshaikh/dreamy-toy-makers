@@ -1,4 +1,4 @@
-import { FileText, Clock, Truck, DollarSign } from "lucide-react";
+import { FileText, Clock, Truck, DollarSign, HelpCircle } from "lucide-react";
 
 const PoliciesPage = () => {
   return (
@@ -10,7 +10,7 @@ const PoliciesPage = () => {
             My <span className="text-gradient">Policies</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Important information about orders, shipping, and refunds
+            Everything you need to know about ordering from me
           </p>
         </div>
 
@@ -23,28 +23,27 @@ const PoliciesPage = () => {
               </div>
               <div>
                 <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                  Order Cancellation
+                  Cancellations
                 </h2>
                 <p className="text-muted-foreground">
-                  Cancellations are accepted within 12 hours of placing your order
+                  You can cancel within 12 hours of placing your order
                 </p>
               </div>
             </div>
 
             <div className="bg-primary/5 rounded-2xl p-6">
-              <h3 className="font-semibold text-foreground mb-4">Important Details:</h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>You can cancel your order within 12 hours of placement</span>
+                  <span>Cancel within 12 hours and I'll process your refund right away</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>After 12 hours, orders cannot be cancelled as I begin working on your toy</span>
+                  <span>After 12 hours, I've already started working on your toy so cancellations aren't possible</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Contact me immediately on X (@whatsupskylar) if you need to cancel</span>
+                  <span>Need to cancel? DM me on X (@whatsupskylar) ASAP</span>
                 </li>
               </ul>
             </div>
@@ -58,28 +57,27 @@ const PoliciesPage = () => {
               </div>
               <div>
                 <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                  Return Policy
+                  Returns
                 </h2>
                 <p className="text-muted-foreground">
-                  Returns are not accepted as each toy is custom-made
+                  Each toy is custom-made just for you
                 </p>
               </div>
             </div>
 
             <div className="bg-primary/5 rounded-2xl p-6">
-              <h3 className="font-semibold text-foreground mb-4">Why I Cannot Accept Returns:</h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Each toy is custom-made specifically based on your unique OC design</span>
+                  <span>Since every toy is made specifically for your OC, I can't accept returns</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>I create one-of-a-kind items that cannot be resold or reused</span>
+                  <span>BUT if your toy arrives damaged, reach out and I'll make it right - I'll either remake it or refund you</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>However, if your toy arrives damaged, please contact me and I will make it right</span>
+                  <span>I take photos of every toy before shipping so we can compare if there's any damage</span>
                 </li>
               </ul>
             </div>
@@ -93,32 +91,31 @@ const PoliciesPage = () => {
               </div>
               <div>
                 <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                  Refund Policy
+                  Refunds
                 </h2>
                 <p className="text-muted-foreground">
-                  Refunds are available for cancellations within the 12-hour window
+                  Fair refund policy for everyone
                 </p>
               </div>
             </div>
 
             <div className="bg-primary/5 rounded-2xl p-6">
-              <h3 className="font-semibold text-foreground mb-4">Refund Details:</h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Cancellations within 12 hours: 80% refund (20% covers initial design work)</span>
+                  <span><strong>Within 12 hours:</strong> Full refund minus 20% (covers design work I've already done)</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>After 12 hours: No refunds as production has already started</span>
+                  <span><strong>After 12 hours:</strong> No refunds since production has started</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Damaged items: Full replacement or refund at my discretion</span>
+                  <span><strong>Damaged items:</strong> Full replacement or refund, your choice</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Refunds are processed within 5-7 business days via your original payment method</span>
+                  <span>Refunds are processed within 5-7 business days</span>
                 </li>
               </ul>
             </div>
@@ -132,36 +129,65 @@ const PoliciesPage = () => {
               </div>
               <div>
                 <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                  Shipping Policy
+                  Shipping
                 </h2>
                 <p className="text-muted-foreground">
-                  Shipping costs are not included in the toy price
+                  I ship worldwide from Florida
                 </p>
               </div>
             </div>
 
             <div className="bg-primary/5 rounded-2xl p-6">
-              <h3 className="font-semibold text-foreground mb-4">Shipping Information:</h3>
               <ul className="space-y-3 text-muted-foreground">
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Shipping costs vary based on your location and are calculated separately</span>
+                  <span><strong>USA:</strong> 1-2 weeks delivery</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>I ship worldwide from Florida, USA</span>
+                  <span><strong>International:</strong> 2-4 weeks depending on your location</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>Domestic (USA): 1-2 weeks delivery</span>
+                  <span>Every order includes tracking so you can follow your toy's journey</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>International: 2-4 weeks delivery depending on location</span>
+                  <span>Shipping costs are calculated based on your location and aren't included in the $489 price</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Production Time */}
+          <div className="glass-card rounded-3xl p-8 sm:p-12">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <HelpCircle className="w-8 h-8 text-primary" />
+              </div>
+              <div>
+                <h2 className="font-handwritten text-3xl text-foreground mb-2">
+                  Production Time
+                </h2>
+                <p className="text-muted-foreground">
+                  Each toy is handcrafted with care
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-primary/5 rounded-2xl p-6">
+              <ul className="space-y-3 text-muted-foreground">
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
+                  <span>Production typically takes 1-2 weeks depending on complexity</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
-                  <span>All orders include tracking information</span>
+                  <span>I'll send you progress photos as I work on your toy</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0"></span>
+                  <span>During busy periods, it might take a bit longer - I'll always keep you updated</span>
                 </li>
               </ul>
             </div>
@@ -170,10 +196,10 @@ const PoliciesPage = () => {
           {/* Contact Information */}
           <div className="glass-card rounded-3xl p-8 sm:p-12 text-center">
             <h2 className="font-handwritten text-3xl text-foreground mb-4">
-              Questions About My Policies?
+              Got Questions?
             </h2>
             <p className="text-muted-foreground mb-6">
-              I'm happy to help! Reach out to me on X (Twitter) for any questions or concerns.
+              I'm always happy to help! Just DM me on X and I'll get back to you ASAP.
             </p>
             <a
               href="https://x.com/whatsupskylar"
@@ -181,7 +207,7 @@ const PoliciesPage = () => {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl hover:bg-primary/90 transition-colors"
             >
-              Contact Me on X
+              Message Me on X
             </a>
           </div>
         </div>
