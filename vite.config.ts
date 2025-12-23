@@ -5,7 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: "/", // Updated for a custom root domain (yourprettyskylarr.com)
+  base: "/", // Updated for a custom root domain (yourprettyskylar.com)
   build: {
     outDir: "dist",
     assetsDir: "assets",
