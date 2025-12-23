@@ -36,15 +36,7 @@ const HomePage = () => {
               <Star className="w-6 h-6 text-accent fill-accent" />
               <div className="text-left">
                 <p className="text-sm text-muted-foreground">Premium Collectible</p>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                <p className="text-3xl font-bold text-foreground">$489 <span className="text-base font-normal text-muted-foreground">USD</span></p>
-=======
                 <p className="text-3xl font-bold text-foreground">$1,299 <span className="text-base font-normal text-muted-foreground">USD</span></p>
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
-                <p className="text-3xl font-bold text-foreground">$1,299 <span className="text-base font-normal text-muted-foreground">USD</span></p>
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
               </div>
               <Star className="w-6 h-6 text-accent fill-accent" />
             </div>
@@ -84,25 +76,11 @@ const HomePage = () => {
             {
               icon: Heart,
               title: "Upload Your OC",
-<<<<<<< HEAD
-<<<<<<< HEAD
               description: "Share your anime character design and I will bring it to life",
             },
             {
               icon: Sparkles,
               title: "Preview Your Toy",
-=======
-=======
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-              description: "Share your anime character design and I'll bring it to life",
-            },
-            {
-              icon: Sparkles,
-              title: "AI-Powered Preview",
-<<<<<<< HEAD
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
               description: "See exactly how your character will look as a 3D toy before ordering",
             },
             {

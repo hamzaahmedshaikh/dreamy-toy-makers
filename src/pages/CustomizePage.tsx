@@ -1,20 +1,11 @@
-<<<<<<< HEAD
 import { useState, useCallback, useEffect } from "react";
-=======
-import { useState, useCallback } from "react";
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, Sparkles, CheckCircle, Twitter, Heart, Package, ArrowRight, Image, Loader2, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-<<<<<<< HEAD
 import emailjs from "@emailjs/browser";
-=======
-import emailjs from '@emailjs/browser';
-import { supabase } from "@/integrations/supabase/client";
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 
 type OrderStep = "upload" | "transforming" | "preview" | "form" | "success";
 
@@ -33,13 +24,10 @@ const CustomizePage = () => {
   });
   const { toast } = useToast();
 
-<<<<<<< HEAD
   useEffect(() => {
     emailjs.init("AguvgiZG-z9aRnJhH");
   }, []);
 
-=======
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
   const transformToToy = async (imageBase64: string) => {
     setIsTransforming(true);
     setStep("transforming");
@@ -69,13 +57,8 @@ const CustomizePage = () => {
         setTransformedImage(data.transformedImage);
         setStep("preview");
         toast({
-<<<<<<< HEAD
           title: "Preview Ready! ✨",
           description: "Your OC has been transformed into a 3D toy preview!",
-=======
-          title: "Transformation Complete! ✨",
-          description: "Your OC has been transformed into a 3D toy!",
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         });
       } else {
         throw new Error("No transformed image received");
@@ -83,11 +66,7 @@ const CustomizePage = () => {
     } catch (error) {
       console.error("Transformation error:", error);
       toast({
-<<<<<<< HEAD
         title: "Preview Failed",
-=======
-        title: "Transformation Failed",
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
@@ -114,11 +93,7 @@ const CustomizePage = () => {
       reader.onloadend = () => {
         const base64 = reader.result as string;
         setUploadedImage(base64);
-<<<<<<< HEAD
         // Automatically generate preview
-=======
-        // Automatically start AI transformation
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         transformToToy(base64);
       };
       reader.readAsDataURL(file);
@@ -138,13 +113,12 @@ const CustomizePage = () => {
     }
 
     try {
-<<<<<<< HEAD
       // Generate order number
       const timestamp = Date.now().toString(36).toUpperCase();
       const random = Math.random().toString(36).substring(2, 6).toUpperCase();
       const orderNumber = `SKY-${timestamp}-${random}`;
 
-      // Send email to Skylar (admin) with order details (NO base64 images — EmailJS limits variables to ~50KB)
+      // Send email to Skylar (admin) with order details
       const adminRes = await emailjs.send(
         "service_3kq9rho",
         "template_2cb6uc7",
@@ -154,7 +128,6 @@ const CustomizePage = () => {
           customer_email: formData.paypalEmail,
           payment_method: formData.paymentMethod,
           message: formData.message || "No message provided",
-          // IMPORTANT: do not send reference_image/transformed_image via EmailJS (will 413 on large uploads)
         }
       );
       console.log("EmailJS admin email sent:", adminRes);
@@ -205,36 +178,10 @@ const CustomizePage = () => {
       } catch (err) {
         console.warn("Backend email failed (attachments):", err);
       }
-=======
-      // Send email to yourself with order details
-      const templateParams: Record<string, string> = {
-        from_name: `${formData.firstName} ${formData.lastName}`,
-        customer_email: formData.paypalEmail,
-        payment_method: formData.paymentMethod,
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        paypal_email: formData.paypalEmail,
-        message: formData.message || "No message provided",
-        order_details: `New custom toy order from ${formData.firstName} ${formData.lastName}. Payment method: ${formData.paymentMethod}. PayPal email: ${formData.paypalEmail}. Message: ${formData.message || "No message provided"}`,
-      };
-
-      console.log('Sending order email with params:', templateParams);
-
-      // Send email to yourself
-      const result = await emailjs.send(
-        'service_3kq9rho',
-        'template_2cb6uc7',
-        templateParams,
-        'AguvgiZG-z9aRnJhH'
-      );
-
-      console.log('Order email sent successfully:', result);
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
 
       setStep("success");
       toast({
         title: "Order Placed! 🎉",
-<<<<<<< HEAD
         description: `Order #${orderNumber} confirmed! Check your email.`,
       });
     } catch (error: any) {
@@ -254,18 +201,6 @@ const CustomizePage = () => {
           errInfo.text || errInfo.message || "Email provider error. Please message me on X to confirm.",
         variant: "destructive",
       });
-=======
-        description: "Check your email for order confirmation",
-      });
-    } catch (error) {
-      console.error('Order email sending failed:', error);
-      toast({
-        title: "Order Placed!",
-        description: "There was an issue sending the email, but your order was recorded.",
-        variant: "destructive",
-      });
-      setStep("success");
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
     }
   };
 
@@ -282,43 +217,17 @@ const CustomizePage = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 animate-slide-in-bottom">
-<<<<<<< HEAD
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Upload your anime OC and my AI will transform it into a 3D toy! ✨
-          </p>
-=======
-            Upload your anime OC and my AI will transform it into a 3D toy! ✨
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-          </p>
-=======
-=======
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
           <h1 className="font-handwritten text-5xl sm:text-6xl text-foreground mb-4">
             Create Your <span className="text-gradient">Custom Toy</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             Upload your anime OC and my AI will transform it into a 3D toy! ✨
           </p>
-<<<<<<< HEAD
-=======
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Upload your anime OC and my AI will transform it into a 3D toy! ✨
-          </p>
-=======
-            Upload your anime OC and my AI will transform it into a 3D toy! ✨
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-          </p>
-=======
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
         </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-center gap-4 mb-12 animate-slide-in-bottom" style={{ animationDelay: "0.1s" }}>
-<<<<<<< HEAD
           {["Upload", "Creating", "Preview", "Done"].map((label, index) => {
-=======
-          {["Upload", "AI Magic", "Preview", "Done"].map((label, index) => {
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
             const stepMapping = ["upload", "transforming", "preview", "success"];
             const currentStepIndex = step === "form" ? 2 : stepMapping.indexOf(step);
             const isActive = index <= currentStepIndex;
@@ -363,18 +272,8 @@ const CustomizePage = () => {
                 Upload Your OC
               </h2>
               <p className="text-muted-foreground mb-8">
-<<<<<<< HEAD
-<<<<<<< HEAD
                 Share your anime original character image and my AI will transform it 
                 into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
-=======
-                Share your anime original character image and my AI will transform it 
-                into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
-                Share your anime original character image and my AI will transform it 
-                into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
               </p>
               
               <label className="cursor-pointer">
@@ -394,21 +293,10 @@ const CustomizePage = () => {
               <div className="mt-8 p-4 bg-primary/5 rounded-xl">
                 <div className="flex items-center justify-center gap-2 text-primary mb-2">
                   <Wand2 className="w-5 h-5" />
-<<<<<<< HEAD
                   <span className="font-semibold">Instant Preview</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-<<<<<<< HEAD
                   My AI will automatically convert your character into a cute chibi 3D toy style!
-=======
-                  My AI will automatically convert your character into a cute chibi 3D toy style!
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
-                  <span className="font-semibold">AI-Powered Transformation</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  My AI will automatically convert your character into a cute chibi 3D toy style!
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
                 </p>
               </div>
             </div>
@@ -437,334 +325,231 @@ const CustomizePage = () => {
               </div>
               
               <h2 className="font-handwritten text-3xl text-foreground mb-4">
-<<<<<<< HEAD
                 Creating Your Preview ✨
               </h2>
               <p className="text-muted-foreground mb-4">
-<<<<<<< HEAD
                 My AI is transforming your OC into a cute 3D toy...
-=======
-                My AI is transforming your OC into a cute 3D toy...
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
-                AI Magic in Progress ✨
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                My AI is transforming your OC into a cute 3D toy...
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
               </p>
-              <div className="flex items-center justify-center gap-2 text-primary">
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span className="text-sm">This usually takes 15-30 seconds</span>
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin text-primary" />
+                <span className="text-sm text-muted-foreground">This may take a moment</span>
               </div>
             </div>
           )}
 
-          {(step === "preview" || step === "form") && transformedImage && (
+          {step === "preview" && transformedImage && (
+            <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-4xl mx-auto">
+              <div className="text-center mb-8">
+                <h2 className="font-handwritten text-3xl text-foreground mb-2">
+                  Your 3D Toy Preview! ✨
+                </h2>
+                <p className="text-muted-foreground">
+                  Here's how your custom toy will look. Ready to order?
+                </p>
+              </div>
+
+              {/* Side by side comparison */}
+              <div className="grid md:grid-cols-2 gap-8 mb-8">
+                {/* Original */}
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-3">Your Original OC</p>
+                  <div className="aspect-square rounded-2xl overflow-hidden bg-muted/20 border-2 border-muted">
+                    {uploadedImage && (
+                      <img
+                        src={uploadedImage}
+                        alt="Original OC"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                </div>
+
+                {/* Transformed */}
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-3">3D Toy Preview</p>
+                  <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/30 relative">
+                    <img
+                      src={transformedImage}
+                      alt="3D Toy Preview"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute top-3 right-3">
+                      <Sparkles className="w-6 h-6 text-primary animate-sparkle" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price and CTA */}
+              <div className="text-center space-y-4">
+                <div className="inline-block bg-primary/10 rounded-2xl px-8 py-4">
+                  <p className="text-sm text-muted-foreground mb-1">Custom Toy Price</p>
+                  <p className="font-handwritten text-4xl text-primary">$1,299 USD</p>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button
+                    onClick={() => setStep("form")}
+                    className="btn-kawaii text-lg px-8 py-6"
+                  >
+                    <Heart className="w-5 h-5 mr-2" />
+                    I Love It! Order Now
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    onClick={resetOrder}
+                    className="text-lg px-8 py-6"
+                  >
+                    Try Different Image
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === "form" && (
             <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto">
-              {step === "preview" ? (
-                <>
-                  <div className="text-center mb-8">
-                    <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                      Your 3D Toy Preview ✨
-                    </h2>
-                    <p className="text-muted-foreground">
-<<<<<<< HEAD
-                      Here is how your custom toy will look!
-=======
-                      AI-generated preview of your custom toy!
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                    </p>
+              {/* Show transformed image thumbnail */}
+              {transformedImage && (
+                <div className="flex justify-center mb-8">
+                  <div className="relative">
+                    <img
+                      src={transformedImage}
+                      alt="Your 3D Toy"
+                      className="w-32 h-32 object-cover rounded-2xl border-2 border-primary/30"
+                    />
+                    <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-primary animate-sparkle" />
                   </div>
-
-                  {/* Before/After Comparison */}
-                  <div className="grid grid-cols-2 gap-4 mb-8">
-                    {/* Original */}
-                    <div className="text-center">
-                      <p className="text-sm text-muted-foreground mb-2">Original OC</p>
-                      <div className="aspect-square rounded-2xl overflow-hidden border-2 border-muted">
-                        {uploadedImage && (
-                          <img
-                            src={uploadedImage}
-                            alt="Original OC"
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                    </div>
-                    
-                    {/* Transformed */}
-                    <div className="text-center">
-                      <p className="text-sm text-primary font-semibold mb-2">3D Toy Version</p>
-                      <div className="aspect-square rounded-2xl overflow-hidden border-2 border-primary shadow-glow relative">
-                        <img
-                          src={transformedImage}
-                          alt="3D Toy Preview"
-                          className="w-full h-full object-cover"
-                        />
-                        <Sparkles className="absolute top-2 right-2 w-6 h-6 text-primary animate-sparkle" />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Toy Info */}
-                  <div className="bg-primary/5 rounded-2xl p-4 mb-6 text-center">
-                    <div className="flex items-center justify-center gap-2 text-foreground mb-1">
-                      <Package className="w-5 h-5 text-primary" />
-                      <span className="font-semibold">Custom 3D Printed Toy</span>
-                    </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
-=======
-                    <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Your final toy will look just like the preview!
-=======
-                    <p className="text-3xl font-bold text-foreground">$1,299 USD</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Your final toy will look just like the AI preview!
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                    </p>
-                  </div>
-
-                  <div className="flex gap-4">
-                    <Button variant="outline" className="flex-1" onClick={resetOrder}>
-                      Try Different Image
-                    </Button>
-                    <Button variant="hero" className="flex-1" onClick={() => setStep("form")}>
-                      Order This Toy
-                      <ArrowRight className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="text-center mb-8">
-                    <h2 className="font-handwritten text-3xl text-foreground mb-2">
-                      Complete Your Order 💕
-                    </h2>
-                    <p className="text-muted-foreground">
-                      Please provide your details to finish your purchase
-                    </p>
-                  </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName" className="text-foreground">First Name</Label>
-                        <Input
-                          id="firstName"
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          placeholder="Enter your first name"
-                          className="bg-background/50 border-primary/20 focus:border-primary"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName" className="text-foreground">Last Name</Label>
-                        <Input
-                          id="lastName"
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                          placeholder="Enter your last name"
-                          className="bg-background/50 border-primary/20 focus:border-primary"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="paypalEmail" className="text-foreground">PayPal Email</Label>
-                      <Input
-                        id="paypalEmail"
-                        type="email"
-                        value={formData.paypalEmail}
-                        onChange={(e) => setFormData({ ...formData, paypalEmail: e.target.value })}
-                        placeholder="your-email@example.com"
-                        className="bg-background/50 border-primary/20 focus:border-primary"
-                      />
-                      <p className="text-xs text-muted-foreground">
-<<<<<<< HEAD
-                        I will send the payment request to this email
-=======
-                        We'll send the payment request to this email
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message" className="text-foreground">Message (Optional)</Label>
-                      <textarea
-                        id="message"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        placeholder="Any special requests or notes about your OC..."
-                        className="w-full px-3 py-2 bg-background/50 border border-primary/20 rounded-lg focus:border-primary focus:outline-none resize-none"
-                        rows={3}
-                      />
-                      <p className="text-xs text-muted-foreground">
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        Tell me about your character or any specific details you'd like me to know
-=======
-                        Tell me about your character or any specific details you'd like me to know
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
-                        Tell me about your character or any specific details you'd like me to know
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                      </p>
-                    </div>
-
-                    <div className="space-y-3">
-                      <Label className="text-foreground">Payment Method</Label>
-                      <RadioGroup
-                        value={formData.paymentMethod}
-                        onValueChange={(value) => setFormData({ ...formData, paymentMethod: value })}
-                        className="flex flex-col space-y-2"
-                      >
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="paypal" id="paypal" />
-                          <Label htmlFor="paypal" className="text-foreground">PayPal</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="other" id="other" />
-                          <Label htmlFor="other" className="text-foreground">Other Payment Method</Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
-
-<<<<<<< HEAD
-                    {/* Order Summary */}
-=======
-                    {/* Order Summary with AI preview */}
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                    <div className="bg-primary/5 rounded-2xl p-4">
-                      <h3 className="font-semibold text-foreground mb-2">Order Summary</h3>
-                      <div className="flex items-center gap-3">
-                        <img 
-                          src={transformedImage} 
-                          alt="3D Toy Preview" 
-                          className="w-16 h-16 rounded-xl object-cover border-2 border-primary" 
-                        />
-                        <div className="flex-1">
-                          <p className="text-foreground font-medium">Custom 3D Anime Toy</p>
-<<<<<<< HEAD
-                          <p className="text-muted-foreground text-sm">Handcrafted by Skylar</p>
-                        </div>
-<<<<<<< HEAD
-                        <p className="text-xl font-bold text-foreground">$1,299</p>
-=======
-                        <p className="text-xl font-bold text-foreground">$1,299</p>
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-=======
-                          <p className="text-muted-foreground text-sm">AI-Generated Design</p>
-                        </div>
-                        <p className="text-xl font-bold text-foreground">$1,299</p>
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <Button type="button" variant="outline" className="flex-1" onClick={() => setStep("preview")}>
-                        Back
-                      </Button>
-                      <Button type="submit" variant="hero" className="flex-1">
-                        <Sparkles className="w-4 h-4" />
-                        Submit Order
-                      </Button>
-                    </div>
-                  </form>
-                </>
+                </div>
               )}
+
+              <h2 className="font-handwritten text-3xl text-foreground mb-6 text-center">
+                Complete Your Order
+              </h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      id="firstName"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                      placeholder="Your first name"
+                      className="rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      id="lastName"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                      placeholder="Your last name"
+                      className="rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="paypalEmail">PayPal Email</Label>
+                  <Input
+                    id="paypalEmail"
+                    type="email"
+                    value={formData.paypalEmail}
+                    onChange={(e) => setFormData(prev => ({ ...prev, paypalEmail: e.target.value }))}
+                    placeholder="your@email.com"
+                    className="rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="message">Special Requests (Optional)</Label>
+                  <Input
+                    id="message"
+                    value={formData.message}
+                    onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                    placeholder="Any special requests or notes..."
+                    className="rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Payment Method</Label>
+                  <RadioGroup
+                    value={formData.paymentMethod}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
+                    className="grid grid-cols-2 gap-4"
+                  >
+                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-colors cursor-pointer">
+                      <RadioGroupItem value="paypal" id="paypal" />
+                      <Label htmlFor="paypal" className="cursor-pointer">PayPal</Label>
+                    </div>
+                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-colors cursor-pointer">
+                      <RadioGroupItem value="crypto" id="crypto" />
+                      <Label htmlFor="crypto" className="cursor-pointer">Crypto</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <div className="bg-primary/5 rounded-xl p-4 text-center">
+                  <p className="text-sm text-muted-foreground mb-1">Total</p>
+                  <p className="font-handwritten text-3xl text-primary">$1,299 USD</p>
+                </div>
+
+                <Button type="submit" className="btn-kawaii w-full text-lg py-6">
+                  <Sparkles className="w-5 h-5 mr-2" />
+                  Place Order
+                </Button>
+              </form>
             </div>
           )}
 
           {step === "success" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto text-center">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 pulse-soft">
-                <CheckCircle className="w-12 h-12 text-primary" />
+            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto">
+              <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-12 h-12 text-green-500" />
               </div>
+              
+              <h2 className="font-handwritten text-4xl text-foreground mb-4">
+                Order Confirmed! 🎉
+              </h2>
+              
+              <p className="text-muted-foreground mb-8 text-lg">
+                Thank you for your order! I'll start working on your custom toy right away. 
+                You'll receive an email confirmation shortly.
+              </p>
 
-              <h1 className="font-handwritten text-5xl text-foreground mb-4">
-                Order Placed! 🎉
-              </h1>
-
-              {/* Show the transformed image */}
+              {/* Show final toy preview */}
               {transformedImage && (
                 <div className="mb-8">
                   <img
                     src={transformedImage}
-                    alt="Your 3D Toy"
-                    className="w-32 h-32 rounded-2xl object-cover mx-auto border-4 border-primary shadow-glow"
+                    alt="Your Custom Toy"
+                    className="w-48 h-48 object-cover rounded-2xl mx-auto border-4 border-primary/30 shadow-soft"
                   />
-                  <p className="text-sm text-muted-foreground mt-2">Your custom toy design</p>
                 </div>
               )}
 
-              {formData.paymentMethod === "paypal" ? (
-                <>
-                  <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-<<<<<<< HEAD
-                    Thank you! You will receive a payment request on PayPal. Once you complete the payment, send me the confirmation on X.
-=======
-                    Order placed, you'll receive a payment request on PayPal, accept it and send the payment proof on this X account.
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                  </p>
-
-                  <div className="bg-primary/5 rounded-2xl p-6 mb-8">
-                    <h3 className="font-semibold text-foreground mb-4">Next Steps:</h3>
-                    <ol className="text-left space-y-3 text-muted-foreground">
-                      <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">1</span>
-<<<<<<< HEAD
-                        <span>Check your PayPal email for my payment request</span>
-=======
-                        <span>Check your PayPal email for the payment request</span>
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">2</span>
-                        <span>Accept the payment request and complete payment</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">3</span>
-                        <span>Take a screenshot of your payment confirmation</span>
-                      </li>
-                      <li className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">4</span>
-                        <span>Share the screenshot on X (Twitter) and tag me!</span>
-                      </li>
-                    </ol>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-                    Thank you for your order! Please reach out to me on X to arrange payment.
-                  </p>
-                </>
-              )}
-
-              <a
-                href="https://x.com/whatsupskylar"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-4 rounded-2xl font-semibold hover:opacity-90 transition-opacity mb-6"
-              >
-                <Twitter className="w-5 h-5" />
-<<<<<<< HEAD
-                Contact Me on X @whatsupskylar
-=======
-                Contact on X @whatsupskylar
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
-              </a>
-
-              <div className="mt-8">
-                <Button variant="outline" onClick={resetOrder} className="gap-2">
-                  <Heart className="w-4 h-4" />
-                  Place Another Order
-                </Button>
+              <div className="space-y-4">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <Package className="w-5 h-5" />
+                  <span>Estimated delivery: 2-3 weeks</span>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button onClick={resetOrder} variant="outline" className="rounded-xl">
+                    Order Another
+                  </Button>
+                  <Button asChild className="btn-kawaii">
+                    <a href="https://x.com/yourprettysky" target="_blank" rel="noopener noreferrer">
+                      <Twitter className="w-4 h-4 mr-2" />
+                      Follow for Updates
+                    </a>
+                  </Button>
+                </div>
               </div>
             </div>
           )}
@@ -774,8 +559,4 @@ const CustomizePage = () => {
   );
 };
 
-<<<<<<< HEAD
 export default CustomizePage;
-=======
-export default CustomizePage;
->>>>>>> a5c1b7f8dcac7dc783fc0f417afb54ef255a1d4a
