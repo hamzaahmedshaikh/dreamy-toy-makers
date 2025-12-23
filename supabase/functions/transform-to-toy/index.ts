@@ -47,25 +47,28 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: `Transform this character into a PREMIUM COLLECTIBLE 3D CHIBI FIGURE exactly like Nendoroid, Good Smile Company, or Pop Mart figures.
+                text: `Transform this EXACT character into a premium 3D collectible chibi figure while PRESERVING THEIR EXACT APPEARANCE.
 
-CRITICAL - BACKGROUND MUST BE PURE WHITE:
-- Replace the background with a CLEAN, PURE WHITE (#FFFFFF) background
-- The background should be completely white like a professional product photography studio
-- NO gradients, NO shadows on background, NO colored backgrounds - ONLY pure white
-- This is for a product catalog, so the white background is essential
+CRITICAL - PRESERVE CHARACTER IDENTITY:
+• Keep the EXACT same face, facial features, and expression
+• Keep the EXACT same hair color, hairstyle, and hair details
+• Keep the EXACT same eye color, eye shape, and eye style
+• Keep the EXACT same outfit, clothing colors, and accessories
+• Keep any unique features like tattoos, scars, markings, or jewelry
+• The character must be 100% recognizable as the same person
 
-3D FIGURE REQUIREMENTS:
-• Chibi proportions: oversized cute head (about 1/2 to 1/3 of total body height), small adorable body
-• Premium glossy plastic/vinyl material with realistic subsurface scattering and shine highlights
-• Ultra-detailed face with large expressive anime eyes, subtle blush marks
-• Keep ALL original features: exact hair color, hairstyle, eye color, outfit, accessories
-• High-end collectible figure quality with fine sculpted details on clothing folds and textures
-• Soft ambient lighting that makes the figure pop naturally against the white background
-• Smooth cel-shaded aesthetic with professional soft shadows ON THE FIGURE ONLY
-• The figure should look like a $100+ premium Japanese collectible
+BACKGROUND REQUIREMENT:
+• Pure white (#FFFFFF) studio background only
+• No gradients, no shadows on background, no colors - ONLY pure white
 
-The result should look like an actual product photo of a high-end collectible figure on a PURE WHITE background like in an official product catalog.`
+3D FIGURE STYLE:
+• Chibi proportions: cute oversized head (1/3 of body), small body
+• Premium glossy plastic/vinyl finish with subtle shine
+• Large expressive anime eyes with detail
+• Soft ambient lighting, professional product photo look
+• High-quality collectible figure appearance like Nendoroid/Good Smile Company
+
+The character's identity and all visual features MUST remain exactly the same - only convert to 3D chibi figure style on white background.`
               },
               {
                 type: "image_url",
