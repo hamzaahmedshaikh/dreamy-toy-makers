@@ -14,6 +14,8 @@ const CustomizePage = () => {
   const [transformedImage, setTransformedImage] = useState<string | null>(null);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [isTransforming, setIsTransforming] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderNumber, setOrderNumber] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -106,33 +108,81 @@ const CustomizePage = () => {
       return;
     }
 
-    // Check if email already has an order
+    setIsSubmitting(true);
+
     try {
       const { supabase } = await import("@/integrations/supabase/client");
+      
+      // Check if email already has an order
       const { data: existingOrder } = await supabase
         .from("orders")
-        .select("id")
+        .select("order_number")
         .eq("customer_email", formData.paypalEmail.trim().toLowerCase())
         .maybeSingle();
 
       if (existingOrder) {
         toast({
           title: "Order Already Exists",
-          description: "You already have an order with this email. DM me on X if you need help!",
+          description: `You already have an order (${existingOrder.order_number}). DM me on X if you need help!`,
           variant: "destructive",
         });
+        setIsSubmitting(false);
         return;
       }
-    } catch (error) {
-      console.error("Error checking existing order:", error);
-    }
 
-    // Just show success - no email sending
-    setStep("success");
-    toast({
-      title: "Order Placed! 🎉",
-      description: "DM me on X with your order number!",
-    });
+      // Get next order number
+      const { data: lastOrder } = await supabase
+        .from("orders")
+        .select("order_number")
+        .like("order_number", "SKY-%")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      let nextNum = 1;
+      if (lastOrder?.order_number) {
+        const match = lastOrder.order_number.match(/SKY-(\d+)/);
+        if (match) {
+          nextNum = parseInt(match[1], 10) + 1;
+        }
+      }
+      const newOrderNumber = `SKY-${nextNum}`;
+
+      // Insert order into database
+      const { error: insertError } = await supabase
+        .from("orders")
+        .insert({
+          order_number: newOrderNumber,
+          customer_first_name: formData.firstName.trim(),
+          customer_last_name: formData.lastName.trim(),
+          customer_email: formData.paypalEmail.trim().toLowerCase(),
+          message: formData.message.trim() || null,
+          payment_method: formData.paymentMethod,
+          reference_image_url: uploadedImage || null,
+          transformed_image_url: transformedImage || null,
+          status: "pending",
+        });
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      setOrderNumber(newOrderNumber);
+      setStep("success");
+      toast({
+        title: "Order Placed! 🎉",
+        description: `Your order number is ${newOrderNumber}. DM me on X!`,
+      });
+    } catch (error) {
+      console.error("Error placing order:", error);
+      toast({
+        title: "Order Failed",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetOrder = () => {
@@ -140,6 +190,7 @@ const CustomizePage = () => {
     setUploadedImage(null);
     setTransformedImage(null);
     setUploadedFile(null);
+    setOrderNumber(null);
     setFormData({ firstName: "", lastName: "", paypalEmail: "", message: "", paymentMethod: "paypal" });
   };
 
@@ -397,7 +448,7 @@ const CustomizePage = () => {
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2 animate-slide-in-left" style={{ animationDelay: "0.1s" }}>
+                  <div className="space-y-2">
                     <Label htmlFor="firstName">First Name</Label>
                     <Input
                       id="firstName"
@@ -407,7 +458,7 @@ const CustomizePage = () => {
                       className="rounded-xl focus:ring-2 focus:ring-primary/50 transition-all"
                     />
                   </div>
-                  <div className="space-y-2 animate-slide-in-right" style={{ animationDelay: "0.1s" }}>
+                  <div className="space-y-2">
                     <Label htmlFor="lastName">Last Name</Label>
                     <Input
                       id="lastName"
@@ -419,7 +470,7 @@ const CustomizePage = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2 animate-slide-in-bottom" style={{ animationDelay: "0.2s" }}>
+                <div className="space-y-2">
                   <Label htmlFor="paypalEmail">Email Address</Label>
                   <Input
                     id="paypalEmail"
@@ -431,7 +482,7 @@ const CustomizePage = () => {
                   />
                 </div>
 
-                <div className="space-y-2 animate-slide-in-bottom" style={{ animationDelay: "0.3s" }}>
+                <div className="space-y-2">
                   <Label htmlFor="message">Special Requests (Optional)</Label>
                   <Input
                     id="message"
@@ -442,18 +493,18 @@ const CustomizePage = () => {
                   />
                 </div>
 
-                <div className="space-y-3 animate-slide-in-bottom" style={{ animationDelay: "0.4s" }}>
+                <div className="space-y-3">
                   <Label>Payment Method</Label>
                   <RadioGroup
                     value={formData.paymentMethod}
                     onValueChange={(value) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
                     className="grid grid-cols-2 gap-4"
                   >
-                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02] hover:shadow-soft">
+                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02]">
                       <RadioGroupItem value="paypal" id="paypal" />
                       <Label htmlFor="paypal" className="cursor-pointer">PayPal</Label>
                     </div>
-                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02] hover:shadow-soft">
+                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02]">
                       <RadioGroupItem value="crypto" id="crypto" />
                       <Label htmlFor="crypto" className="cursor-pointer">Crypto</Label>
                     </div>
@@ -465,10 +516,19 @@ const CustomizePage = () => {
                   <p className="font-handwritten text-3xl text-primary">$489 USD</p>
                 </div>
 
-                <Button type="submit" className="btn-kawaii w-full text-lg py-6 group">
-                  <Sparkles className="w-5 h-5 mr-2 group-hover:animate-sparkle" />
-                  Place Order
-                  <Heart className="w-5 h-5 ml-2 group-hover:animate-heartbeat" />
+                <Button type="submit" disabled={isSubmitting} className="btn-kawaii w-full text-lg py-6 group">
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Placing Order...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2 group-hover:animate-sparkle" />
+                      Place Order
+                      <Heart className="w-5 h-5 ml-2 group-hover:animate-heartbeat" />
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
@@ -501,9 +561,17 @@ const CustomizePage = () => {
               <h2 className="font-handwritten text-4xl text-foreground mb-4">
                 Order Confirmed! 🎉
               </h2>
+
+              {/* Display Order Number */}
+              {orderNumber && (
+                <div className="bg-primary/10 rounded-2xl px-8 py-4 mb-6 inline-block">
+                  <p className="text-sm text-muted-foreground mb-1">Your Order Number</p>
+                  <p className="font-handwritten text-4xl text-primary">{orderNumber}</p>
+                </div>
+              )}
               
               <p className="text-muted-foreground mb-8 text-lg">
-                Thank you for your order! <strong>Please DM me on X (@whatsupskylar) with your order number</strong> to finalize payment details and shipping. 
+                <strong>DM me on X (@whatsupskylar) with your order number "{orderNumber}"</strong> to finalize payment details and shipping. 
                 Can't wait to create your toy! 💕
               </p>
 

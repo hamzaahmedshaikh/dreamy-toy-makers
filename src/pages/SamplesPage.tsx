@@ -154,7 +154,7 @@ const SamplesPage = () => {
     <div className="min-h-screen pt-24 pb-8 px-4 watercolor-bg">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12 animate-slide-in-bottom">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
             <Sparkles className="w-4 h-4 animate-sparkle" />
             <span className="text-sm font-medium">64 Unique Designs</span>
@@ -172,11 +172,10 @@ const SamplesPage = () => {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
-          {animeCharacters.map((character, index) => (
+          {animeCharacters.map((character) => (
             <div
               key={character.id}
-              className="group animate-scale-in"
-              style={{ animationDelay: `${index * 0.02}s` }}
+              className="group"
               onClick={() => setSelectedCharacter(character)}
             >
               <div className="glass-card rounded-2xl overflow-hidden hover:scale-105 transition-all duration-500 hover:shadow-glow cursor-pointer group-hover:animate-jelly">
@@ -212,8 +211,8 @@ const SamplesPage = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="text-center mt-16 animate-slide-in-bottom" style={{ animationDelay: "1s" }}>
-          <div className="glass-card rounded-3xl p-8 inline-block hover:shadow-glow transition-all duration-500 group">
+        <div className="text-center mt-16">
+          <div className="glass-card rounded-3xl p-8 inline-block hover:shadow-glow transition-all duration-300 group">
             <div className="flex justify-center gap-2 mb-4">
               <Heart className="w-5 h-5 text-primary fill-primary animate-heartbeat" />
               <Sparkles className="w-6 h-6 text-primary animate-sparkle" />
