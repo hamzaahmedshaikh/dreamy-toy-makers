@@ -36,7 +36,7 @@ const HomePage = () => {
               <Star className="w-6 h-6 text-accent fill-accent" />
               <div className="text-left">
                 <p className="text-sm text-muted-foreground">Premium Collectible</p>
-                <p className="text-3xl font-bold text-foreground">$1,299 <span className="text-base font-normal text-muted-foreground">USD</span></p>
+                <p className="text-3xl font-bold text-foreground">$489 <span className="text-base font-normal text-muted-foreground">USD</span></p>
               </div>
               <Star className="w-6 h-6 text-accent fill-accent" />
             </div>
@@ -76,7 +76,7 @@ const HomePage = () => {
             {
               icon: Heart,
               title: "Upload Your OC",
-              description: "Share your anime character design and I will bring it to life",
+              description: "Share your anime character design and I'll bring it to life",
             },
             {
               icon: Sparkles,

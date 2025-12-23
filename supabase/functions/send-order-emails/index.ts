@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@4.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -16,7 +17,6 @@ interface OrderEmailRequest {
   message: string;
   referenceImageBase64: string;
   transformedImageBase64: string;
-  // When false, only the admin email is sent (no customer email)
   sendCustomer?: boolean;
 }
 
@@ -28,7 +28,6 @@ function generateOrderNumber(): string {
 }
 
 serve(async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -45,16 +44,74 @@ serve(async (req: Request): Promise<Response> => {
       sendCustomer,
     }: OrderEmailRequest = await req.json();
 
-    console.log("Received order email request for:", customerEmail, "sendCustomer:", sendCustomer);
+    console.log("Received order email request for:", customerEmail);
 
     const orderNumber = generateOrderNumber();
     const customerName = `${firstName} ${lastName}`;
+
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    let referenceImageUrl = null;
+    let transformedImageUrl = null;
+
+    // Upload images to storage
+    if (referenceImageBase64) {
+      const base64Data = referenceImageBase64.replace(/^data:image\/\w+;base64,/, "");
+      const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+      const fileName = `${orderNumber}-reference.png`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from("order-images")
+        .upload(fileName, imageBuffer, { contentType: "image/png" });
+      
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from("order-images").getPublicUrl(fileName);
+        referenceImageUrl = urlData.publicUrl;
+      }
+    }
+
+    if (transformedImageBase64) {
+      const base64Data = transformedImageBase64.replace(/^data:image\/\w+;base64,/, "");
+      const imageBuffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+      const fileName = `${orderNumber}-transformed.png`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from("order-images")
+        .upload(fileName, imageBuffer, { contentType: "image/png" });
+      
+      if (!uploadError) {
+        const { data: urlData } = supabase.storage.from("order-images").getPublicUrl(fileName);
+        transformedImageUrl = urlData.publicUrl;
+      }
+    }
+
+    // Save order to database
+    const { error: dbError } = await supabase.from("orders").insert({
+      order_number: orderNumber,
+      customer_first_name: firstName,
+      customer_last_name: lastName,
+      customer_email: customerEmail,
+      payment_method: paymentMethod,
+      message: message || null,
+      reference_image_url: referenceImageUrl,
+      transformed_image_url: transformedImageUrl,
+      status: "pending",
+      amount: 489.00,
+    });
+
+    if (dbError) {
+      console.error("Error saving order to database:", dbError);
+    } else {
+      console.log("Order saved to database:", orderNumber);
+    }
 
     // Prepare attachments for admin email
     const attachments: Array<{ filename: string; content: string }> = [];
 
     if (referenceImageBase64) {
-      // Extract base64 data (remove data URL prefix if present)
       const base64Data = referenceImageBase64.replace(/^data:image\/\w+;base64,/, "");
       attachments.push({
         filename: "reference-image.png",
@@ -65,81 +122,81 @@ serve(async (req: Request): Promise<Response> => {
     if (transformedImageBase64) {
       const base64Data = transformedImageBase64.replace(/^data:image\/\w+;base64,/, "");
       attachments.push({
-        filename: "transformed-toy-preview.png",
+        filename: "toy-preview.png",
         content: base64Data,
       });
     }
 
-    // Email to Skylar (admin) with reference images
+    // Email to Skylar (admin) - personal voice
     const adminEmailHtml = `
       <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #fdf8f5; padding: 40px; border-radius: 16px;">
-        <h1 style="color: #d4778c; font-size: 28px; margin-bottom: 20px;">🎉 New Order Received!</h1>
+        <h1 style="color: #d4778c; font-size: 28px; margin-bottom: 20px;">New Order! 🎉</h1>
         
         <div style="background: white; padding: 24px; border-radius: 12px; margin-bottom: 24px; border: 1px solid #f0e0e5;">
           <h2 style="color: #333; font-size: 18px; margin-bottom: 16px;">Order Details</h2>
           <p style="color: #666; margin: 8px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Customer Name:</strong> ${customerName}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Customer Email:</strong> ${customerEmail}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $1,299 USD</p>
-          <p style="color: #666; margin: 8px 0;"><strong>Message:</strong> ${message || "No message provided"}</p>
+          <p style="color: #666; margin: 8px 0;"><strong>Customer:</strong> ${customerName}</p>
+          <p style="color: #666; margin: 8px 0;"><strong>Email:</strong> ${customerEmail}</p>
+          <p style="color: #666; margin: 8px 0;"><strong>Payment:</strong> ${paymentMethod}</p>
+          <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $489 USD</p>
+          <p style="color: #666; margin: 8px 0;"><strong>Notes:</strong> ${message || "None"}</p>
         </div>
 
-        <p style="color: #666; font-size: 14px;">Reference images are attached to this email.</p>
+        <p style="color: #666; font-size: 14px;">Reference images attached.</p>
       </div>
     `;
 
-    console.log("Sending admin email with attachments count:", attachments.length);
+    console.log("Sending admin email...");
 
     const adminEmailResponse = await resend.emails.send({
-      from: "OC Toys Orders <onboarding@resend.dev>",
+      from: "Orders <onboarding@resend.dev>",
       to: ["whatsupskylar@gmail.com"],
-      subject: `🎉 New Order #${orderNumber} from ${customerName}`,
+      subject: `New Order #${orderNumber} from ${customerName}`,
       html: adminEmailHtml,
       attachments,
     });
 
     console.log("Admin email sent:", adminEmailResponse);
 
-    // Email to customer (order confirmation)
+    // Customer confirmation email - Skylar's personal voice
     if (sendCustomer !== false) {
       const customerEmailHtml = `
         <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #fdf8f5; padding: 40px; border-radius: 16px;">
-          <h1 style="color: #d4778c; font-size: 28px; margin-bottom: 20px;">Thank you for your order! 💕</h1>
+          <h1 style="color: #d4778c; font-size: 28px; margin-bottom: 20px;">Hey ${firstName}! I got your order 💕</h1>
           
           <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            Hi ${firstName}! I've received your order and I'm so excited to create your custom 3D anime toy!
+            Thanks so much for ordering a custom toy! I'm super excited to start working on bringing your character to life.
           </p>
 
           <div style="background: white; padding: 24px; border-radius: 12px; margin: 24px 0; border: 1px solid #f0e0e5;">
-            <h2 style="color: #333; font-size: 18px; margin-bottom: 16px;">Order Confirmation</h2>
+            <h2 style="color: #333; font-size: 18px; margin-bottom: 16px;">Your Order</h2>
             <p style="color: #666; margin: 8px 0;"><strong>Order Number:</strong> ${orderNumber}</p>
-            <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $1,299 USD</p>
+            <p style="color: #666; margin: 8px 0;"><strong>Amount:</strong> $489 USD</p>
             <p style="color: #666; margin: 8px 0;"><strong>Payment Method:</strong> ${paymentMethod}</p>
           </div>
 
           <div style="background: #fff5f7; padding: 20px; border-radius: 12px; margin: 24px 0;">
-            <h3 style="color: #d4778c; font-size: 16px; margin-bottom: 12px;">What's Next?</h3>
+            <h3 style="color: #d4778c; font-size: 16px; margin-bottom: 12px;">What happens next?</h3>
             <ol style="color: #666; padding-left: 20px; line-height: 1.8;">
               ${paymentMethod === "paypal" ? `
-                <li>Check your PayPal email for the payment request</li>
+                <li>Check your PayPal for my payment request</li>
                 <li>Complete the payment</li>
-                <li>Share your payment confirmation on X and tag me @whatsupskylar</li>
+                <li>DM me on X (@whatsupskylar) with your confirmation</li>
               ` : `
-                <li>Reach out to me on X @whatsupskylar to arrange payment</li>
+                <li>DM me on X @whatsupskylar to arrange crypto payment</li>
               `}
               <li>I'll start crafting your custom toy!</li>
-              <li>You'll receive updates on your order progress</li>
+              <li>I'll send you updates as I work on it</li>
             </ol>
           </div>
 
           <p style="color: #666; font-size: 16px; line-height: 1.6;">
-            If you have any questions, feel free to reach out to me on X (Twitter):
+            Got questions? Just hit me up on X:
             <a href="https://x.com/whatsupskylar" style="color: #d4778c;">@whatsupskylar</a>
           </p>
 
           <p style="color: #666; font-size: 16px; margin-top: 24px;">
-            Thank you for choosing me to bring your character to life!
+            Can't wait to make this for you!
           </p>
           
           <p style="color: #d4778c; font-size: 18px; margin-top: 24px;">
@@ -148,8 +205,8 @@ serve(async (req: Request): Promise<Response> => {
 
           <hr style="border: none; border-top: 1px solid #f0e0e5; margin: 32px 0;" />
           
-          <p style="color: #999; font-size: 12px; line-height: 1.6;">
-            Shipping costs are not included in the order total and will be calculated separately based on your location.
+          <p style="color: #999; font-size: 11px; line-height: 1.6;">
+            Shipping is calculated separately based on your location and isn't included in the order total.
           </p>
         </div>
       `;
@@ -157,9 +214,9 @@ serve(async (req: Request): Promise<Response> => {
       console.log("Sending customer confirmation email...");
 
       const customerEmailResponse = await resend.emails.send({
-        from: "Skylar - OC Toys <onboarding@resend.dev>",
+        from: "Skylar <onboarding@resend.dev>",
         to: [customerEmail],
-        subject: `Order Confirmed! #${orderNumber} 💕`,
+        subject: `Got your order! #${orderNumber} 💕`,
         html: customerEmailHtml,
       });
 
@@ -178,8 +235,6 @@ serve(async (req: Request): Promise<Response> => {
         }
       );
     }
-
-    console.log("sendCustomer=false; skipping customer email");
 
     return new Response(
       JSON.stringify({ success: true, orderNumber, adminEmail: adminEmailResponse }),

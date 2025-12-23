@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Upload, Sparkles, CheckCircle, Twitter, Heart, Package, ArrowRight, Image, Loader2, Wand2 } from "lucide-react";
+import { Upload, Sparkles, CheckCircle, Heart, Package, ArrowRight, Image, Loader2, Wand2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import emailjs from "@emailjs/browser";
 
 type OrderStep = "upload" | "transforming" | "preview" | "form" | "success";
 
@@ -23,10 +22,6 @@ const CustomizePage = () => {
     paymentMethod: "paypal",
   });
   const { toast } = useToast();
-
-  useEffect(() => {
-    emailjs.init("AguvgiZG-z9aRnJhH");
-  }, []);
 
   const transformToToy = async (imageBase64: string) => {
     setIsTransforming(true);
@@ -93,7 +88,6 @@ const CustomizePage = () => {
       reader.onloadend = () => {
         const base64 = reader.result as string;
         setUploadedImage(base64);
-        // Automatically generate preview
         transformToToy(base64);
       };
       reader.readAsDataURL(file);
@@ -113,92 +107,46 @@ const CustomizePage = () => {
     }
 
     try {
-      // Generate order number
-      const timestamp = Date.now().toString(36).toUpperCase();
-      const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-      const orderNumber = `SKY-${timestamp}-${random}`;
-
-      // Send email to Skylar (admin) with order details
-      const adminRes = await emailjs.send(
-        "service_3kq9rho",
-        "template_2cb6uc7",
+      // Send order to backend (saves to DB + sends emails)
+      const fnRes = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-order-emails`,
         {
-          order_number: orderNumber,
-          customer_name: `${formData.firstName} ${formData.lastName}`,
-          customer_email: formData.paypalEmail,
-          payment_method: formData.paymentMethod,
-          message: formData.message || "No message provided",
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            customerEmail: formData.paypalEmail,
+            paymentMethod: formData.paymentMethod,
+            message: formData.message || "",
+            referenceImageBase64: uploadedImage || "",
+            transformedImageBase64: transformedImage || "",
+            sendCustomer: true,
+          }),
         }
       );
-      console.log("EmailJS admin email sent:", adminRes);
 
-      // Send confirmation email to customer
-      const customerRes = await emailjs.send(
-        "service_3kq9rho",
-        "template_kpvs4u7",
-        {
-          order_number: orderNumber,
-          customer_name: formData.firstName,
-          customer_email: formData.paypalEmail,
-          payment_method: formData.paymentMethod,
-        }
-      );
-      console.log("EmailJS customer email sent:", customerRes);
+      const fnData = await fnRes.json();
+      console.log("Order response:", fnData);
 
-      // Send reference + preview images to Skylar via backend email (supports attachments)
-      try {
-        const fnRes = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-order-emails`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            },
-            body: JSON.stringify({
-              firstName: formData.firstName,
-              lastName: formData.lastName,
-              customerEmail: formData.paypalEmail,
-              paymentMethod: formData.paymentMethod,
-              message: formData.message || "No message provided",
-              referenceImageBase64: uploadedImage || "",
-              transformedImageBase64: transformedImage || "",
-              sendCustomer: false,
-            }),
-          }
-        );
-
-        const fnData = await fnRes.json().catch(() => ({}));
-        console.log("Backend admin attachments email response:", fnData);
-
-        if (!fnRes.ok) {
-          console.warn("Backend email failed (attachments):", fnData);
-        }
-      } catch (err) {
-        console.warn("Backend email failed (attachments):", err);
+      if (fnRes.ok && fnData.success) {
+        setStep("success");
+        toast({
+          title: "Order Placed! 🎉",
+          description: `Order #${fnData.orderNumber} confirmed! Check your email.`,
+        });
+      } else {
+        throw new Error(fnData.error || "Failed to place order");
       }
-
-      setStep("success");
-      toast({
-        title: "Order Placed! 🎉",
-        description: `Order #${orderNumber} confirmed! Check your email.`,
-      });
     } catch (error: any) {
-      const errInfo = {
-        message: error?.message,
-        text: error?.text,
-        status: error?.status,
-        name: error?.name,
-      };
-      console.error("Order email sending failed:", error);
-      console.error("EmailJS error details:", errInfo);
-
-      setStep("success");
+      console.error("Order failed:", error);
       toast({
-        title: "Order Placed (Email Failed)",
-        description:
-          errInfo.text || errInfo.message || "Email provider error. Please message me on X to confirm.",
+        title: "Order Failed",
+        description: error.message || "Please try again or contact me on X",
         variant: "destructive",
       });
     }
@@ -221,7 +169,7 @@ const CustomizePage = () => {
             Create Your <span className="text-gradient">Custom Toy</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Upload your anime OC and my AI will transform it into a 3D toy! ✨
+            Upload your anime OC and see how it'll look as a 3D toy! ✨
           </p>
         </div>
 
@@ -272,7 +220,7 @@ const CustomizePage = () => {
                 Upload Your OC
               </h2>
               <p className="text-muted-foreground mb-8">
-                Share your anime original character image and my AI will transform it 
+                Share your anime original character image and I'll transform it 
                 into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
               </p>
               
@@ -296,7 +244,7 @@ const CustomizePage = () => {
                   <span className="font-semibold">Instant Preview</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  My AI will automatically convert your character into a cute chibi 3D toy style!
+                  I'll automatically convert your character into a cute chibi 3D toy style!
                 </p>
               </div>
             </div>
@@ -305,7 +253,6 @@ const CustomizePage = () => {
           {step === "transforming" && (
             <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto">
               <div className="relative w-32 h-32 mx-auto mb-8">
-                {/* Original image thumbnail */}
                 {uploadedImage && (
                   <img
                     src={uploadedImage}
@@ -313,13 +260,11 @@ const CustomizePage = () => {
                     className="w-full h-full object-cover rounded-2xl opacity-50"
                   />
                 )}
-                {/* Spinning overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center animate-pulse">
                     <Wand2 className="w-10 h-10 text-primary animate-bounce" />
                   </div>
                 </div>
-                {/* Sparkles */}
                 <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-primary animate-sparkle" />
                 <Sparkles className="absolute -bottom-2 -left-2 w-6 h-6 text-primary animate-sparkle" style={{ animationDelay: "0.3s" }} />
               </div>
@@ -328,7 +273,7 @@ const CustomizePage = () => {
                 Creating Your Preview ✨
               </h2>
               <p className="text-muted-foreground mb-4">
-                My AI is transforming your OC into a cute 3D toy...
+                Transforming your OC into a cute 3D toy...
               </p>
               <div className="flex items-center justify-center gap-2">
                 <Loader2 className="w-5 h-5 animate-spin text-primary" />
@@ -348,9 +293,7 @@ const CustomizePage = () => {
                 </p>
               </div>
 
-              {/* Side by side comparison */}
               <div className="grid md:grid-cols-2 gap-8 mb-8">
-                {/* Original */}
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground mb-3">Your Original OC</p>
                   <div className="aspect-square rounded-2xl overflow-hidden bg-muted/20 border-2 border-muted">
@@ -364,7 +307,6 @@ const CustomizePage = () => {
                   </div>
                 </div>
 
-                {/* Transformed */}
                 <div className="text-center">
                   <p className="text-sm text-muted-foreground mb-3">3D Toy Preview</p>
                   <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/30 relative">
@@ -380,11 +322,10 @@ const CustomizePage = () => {
                 </div>
               </div>
 
-              {/* Price and CTA */}
               <div className="text-center space-y-4">
                 <div className="inline-block bg-primary/10 rounded-2xl px-8 py-4">
                   <p className="text-sm text-muted-foreground mb-1">Custom Toy Price</p>
-                  <p className="font-handwritten text-4xl text-primary">$1,299 USD</p>
+                  <p className="font-handwritten text-4xl text-primary">$489 USD</p>
                 </div>
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -411,7 +352,6 @@ const CustomizePage = () => {
 
           {step === "form" && (
             <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto">
-              {/* Show transformed image thumbnail */}
               {transformedImage && (
                 <div className="flex justify-center mb-8">
                   <div className="relative">
@@ -496,7 +436,7 @@ const CustomizePage = () => {
 
                 <div className="bg-primary/5 rounded-xl p-4 text-center">
                   <p className="text-sm text-muted-foreground mb-1">Total</p>
-                  <p className="font-handwritten text-3xl text-primary">$1,299 USD</p>
+                  <p className="font-handwritten text-3xl text-primary">$489 USD</p>
                 </div>
 
                 <Button type="submit" className="btn-kawaii w-full text-lg py-6">
@@ -522,7 +462,6 @@ const CustomizePage = () => {
                 You'll receive an email confirmation shortly.
               </p>
 
-              {/* Show final toy preview */}
               {transformedImage && (
                 <div className="mb-8">
                   <img
@@ -544,8 +483,7 @@ const CustomizePage = () => {
                     Order Another
                   </Button>
                   <Button asChild className="btn-kawaii">
-                    <a href="https://x.com/yourprettysky" target="_blank" rel="noopener noreferrer">
-                      <Twitter className="w-4 h-4 mr-2" />
+                    <a href="https://x.com/whatsupskylar" target="_blank" rel="noopener noreferrer">
                       Follow for Updates
                     </a>
                   </Button>
