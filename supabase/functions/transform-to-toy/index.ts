@@ -49,7 +49,17 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: "Transform this anime character into a cute chibi 3D model toy figure. Make it look like a collectible figurine with these exact characteristics: chibi proportions with big head and small body, soft pastel lighting, kawaii aesthetic, product photography style on white background, plastic/vinyl toy material appearance, the figure should be standing on a small circular base. Keep the character's distinctive features like hair color, eye color, and outfit but make it adorable and toy-like. The result should look exactly like a high-quality Nendoroid or Pop Mart style collectible figure."
+                text: `Generate a high-quality 3D chibi toy figure based on this anime character. Requirements:
+• Chibi proportions: oversized head (about 1/2 of body height), small cute body
+• Glossy plastic/vinyl material with subtle shine highlights
+• Soft pastel studio lighting, clean white or very light gradient background
+• Standing pose on a small round display base
+• Keep the character's exact hair color, hairstyle, eye color, and outfit details
+• Kawaii/cute aesthetic with slightly rosy cheeks
+• Professional product photography style like Nendoroid or Pop Mart figures
+• High detail on face, hair texture, and clothing folds
+• Smooth cel-shaded look with soft shadows
+The final image should look like an actual collectible figure photo.`
               },
               {
                 type: "image_url",
