@@ -155,7 +155,7 @@ const SamplesPage = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 animate-slide-in-bottom">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6 animate-bounce-gentle">
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-6">
             <Sparkles className="w-4 h-4 animate-sparkle" />
             <span className="text-sm font-medium">64 Unique Designs</span>
             <Star className="w-4 h-4 fill-accent text-accent animate-twinkle" />

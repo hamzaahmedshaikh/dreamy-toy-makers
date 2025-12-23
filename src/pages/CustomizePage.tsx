@@ -106,11 +106,32 @@ const CustomizePage = () => {
       return;
     }
 
+    // Check if email already has an order
+    try {
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: existingOrder } = await supabase
+        .from("orders")
+        .select("id")
+        .eq("customer_email", formData.paypalEmail.trim().toLowerCase())
+        .maybeSingle();
+
+      if (existingOrder) {
+        toast({
+          title: "Order Already Exists",
+          description: "You already have an order with this email. DM me on X if you need help!",
+          variant: "destructive",
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking existing order:", error);
+    }
+
     // Just show success - no email sending
     setStep("success");
     toast({
       title: "Order Placed! 🎉",
-      description: "I'll DM you on X to finalize the details!",
+      description: "DM me on X with your order number!",
     });
   };
 
@@ -125,21 +146,21 @@ const CustomizePage = () => {
   return (
     <div className="min-h-screen pt-24 pb-8 px-4 watercolor-bg">
       <div className="max-w-4xl mx-auto">
-        {/* Floating decorations */}
+        {/* Floating decorations - gentle float only */}
         <div className="fixed top-32 left-8 animate-float opacity-60 pointer-events-none">
           <Star className="w-8 h-8 text-accent fill-accent/50" />
         </div>
         <div className="fixed top-48 right-12 animate-float-delayed opacity-50 pointer-events-none">
           <Heart className="w-6 h-6 text-primary fill-primary/50" />
         </div>
-        <div className="fixed bottom-32 left-16 animate-wiggle-slow opacity-40 pointer-events-none">
+        <div className="fixed bottom-32 left-16 animate-float opacity-40 pointer-events-none">
           <Sparkles className="w-10 h-10 text-primary" />
         </div>
 
         {/* Header */}
         <div className="text-center mb-12 animate-slide-in-bottom">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4 animate-bounce-gentle">
-            <Wand2 className="w-4 h-4 animate-wiggle" />
+          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
+            <Wand2 className="w-4 h-4" />
             <span className="text-sm font-medium">Magic Transformation</span>
             <Sparkles className="w-4 h-4 animate-sparkle" />
           </div>
@@ -190,9 +211,9 @@ const CustomizePage = () => {
         {/* Step Content */}
         <div className="animate-scale-in">
           {step === "upload" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto animate-float-subtle">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6 animate-bounce-gentle">
-                <Upload className="w-12 h-12 text-primary animate-wiggle" />
+            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto">
+              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+                <Upload className="w-12 h-12 text-primary" />
               </div>
               
               <h2 className="font-handwritten text-3xl text-foreground mb-4">
@@ -211,15 +232,15 @@ const CustomizePage = () => {
                   className="hidden"
                 />
                 <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-glow">
-                  <Image className="w-16 h-16 text-primary/40 mx-auto mb-4 group-hover:animate-bounce-gentle" />
+                  <Image className="w-16 h-16 text-primary/40 mx-auto mb-4 group-hover:scale-110 transition-transform" />
                   <p className="text-foreground font-semibold mb-2">Click to upload or drag & drop</p>
                   <p className="text-muted-foreground text-sm">Max file size: 10MB</p>
                 </div>
               </label>
 
-              <div className="mt-8 p-4 bg-primary/5 rounded-xl animate-pulse-soft">
+              <div className="mt-8 p-4 bg-primary/5 rounded-xl">
                 <div className="flex items-center justify-center gap-2 text-primary mb-2">
-                  <Wand2 className="w-5 h-5 animate-wiggle" />
+                  <Wand2 className="w-5 h-5" />
                   <span className="font-semibold">Instant Preview</span>
                   <Sparkles className="w-5 h-5 animate-sparkle" />
                 </div>
@@ -242,7 +263,7 @@ const CustomizePage = () => {
                 )}
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center animate-pulse-glow">
-                    <Wand2 className="w-10 h-10 text-primary animate-wiggle" />
+                    <Wand2 className="w-10 h-10 text-primary" />
                   </div>
                 </div>
                 <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-primary animate-sparkle" />
@@ -262,12 +283,12 @@ const CustomizePage = () => {
                 <span className="text-sm text-muted-foreground animate-pulse">This may take a moment</span>
               </div>
               
-              {/* Magic particles */}
+              {/* Magic particles - pulsing dots */}
               <div className="mt-6 flex justify-center gap-2">
                 {[...Array(5)].map((_, i) => (
                   <div 
                     key={i} 
-                    className="w-2 h-2 rounded-full bg-primary animate-bounce" 
+                    className="w-2 h-2 rounded-full bg-primary animate-pulse" 
                     style={{ animationDelay: `${i * 0.15}s` }}
                   />
                 ))}
@@ -335,7 +356,7 @@ const CustomizePage = () => {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     onClick={() => setStep("form")}
-                    className="btn-kawaii text-lg px-8 py-6 group animate-bounce-gentle"
+                    className="btn-kawaii text-lg px-8 py-6 group"
                   >
                     <Heart className="w-5 h-5 mr-2 group-hover:animate-heartbeat" />
                     I Love It! Order Now
@@ -455,7 +476,7 @@ const CustomizePage = () => {
 
           {step === "success" && (
             <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto animate-pop-in">
-              <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6 animate-bounce-gentle">
+              <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
                 <CheckCircle className="w-12 h-12 text-green-500 animate-pop-in" />
               </div>
               
@@ -482,7 +503,7 @@ const CustomizePage = () => {
               </h2>
               
               <p className="text-muted-foreground mb-8 text-lg">
-                Thank you for your order! I'll DM you on X (@whatsupskylar) to finalize payment details and shipping. 
+                Thank you for your order! <strong>Please DM me on X (@whatsupskylar) with your order number</strong> to finalize payment details and shipping. 
                 Can't wait to create your toy! 💕
               </p>
 
@@ -498,9 +519,9 @@ const CustomizePage = () => {
                 </div>
               )}
 
-              <div className="space-y-4">
+                <div className="space-y-4">
                 <div className="flex items-center justify-center gap-2 text-muted-foreground animate-slide-in-bottom">
-                  <Package className="w-5 h-5 animate-bounce-gentle" />
+                  <Package className="w-5 h-5" />
                   <span>Estimated delivery: 2-3 weeks</span>
                 </div>
                 
