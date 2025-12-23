@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { HfInference } from "https://esm.sh/@huggingface/inference@2.3.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -33,20 +32,53 @@ serve(async (req) => {
 
     console.log("Starting toy transformation with Hugging Face...");
 
-    const hf = new HfInference(HF_TOKEN);
-
     // Create a detailed prompt for generating a chibi toy figure
     const prompt = `Premium 3D collectible chibi anime figure, cute oversized head, small body, large expressive anime eyes, glossy plastic vinyl finish, Nendoroid Good Smile Company style, professional product photo, pure white studio background, soft ambient lighting, high quality collectible figure`;
 
     console.log("Generating image with prompt:", prompt);
 
-    const image = await hf.textToImage({
-      inputs: prompt,
-      model: "black-forest-labs/FLUX.1-schnell",
-    });
+    // Use the new router endpoint
+    const response = await fetch(
+      "https://router.huggingface.co/hf-inference/models/black-forest-labs/FLUX.1-schnell",
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${HF_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          inputs: prompt,
+        }),
+      }
+    );
 
-    // Convert the blob to a base64 string
-    const arrayBuffer = await image.arrayBuffer();
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Hugging Face API error:", response.status, errorText);
+      
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      
+      if (response.status === 503) {
+        return new Response(
+          JSON.stringify({ error: "Model is loading. Please try again in a few seconds." }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({ error: "Failed to generate image. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Get the image as a blob
+    const imageBlob = await response.blob();
+    const arrayBuffer = await imageBlob.arrayBuffer();
     const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
     const transformedImage = `data:image/png;base64,${base64}`;
 
@@ -62,15 +94,6 @@ serve(async (req) => {
 
   } catch (error: unknown) {
     console.error("Error in transform-to-toy function:", error);
-    
-    // Handle rate limiting
-    if (error instanceof Error && error.message.includes("rate limit")) {
-      return new Response(
-        JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
     return new Response(
       JSON.stringify({ error: errorMessage }),
