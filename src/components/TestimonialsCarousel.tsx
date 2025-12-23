@@ -7,7 +7,7 @@ const testimonials = [
     name: "Sarah M.",
     location: "California, USA",
     rating: 5,
-    text: "I couldn't believe how accurately they captured my OC! The details on her hair and outfit are incredible. Worth every penny!",
+    text: "I couldn't believe how accurately Skylar captured my OC! The details on her hair and outfit are incredible. Worth every penny!",
     character: "Custom OC - Magical Girl"
   },
   {

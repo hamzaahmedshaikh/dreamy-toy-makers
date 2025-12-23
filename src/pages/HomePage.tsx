@@ -76,7 +76,7 @@ const HomePage = () => {
             {
               icon: Heart,
               title: "Upload Your OC",
-              description: "Share your anime character design and we'll bring it to life",
+              description: "Share your anime character design and I'll bring it to life",
             },
             {
               icon: Sparkles,
@@ -103,10 +103,10 @@ const HomePage = () => {
           ))}
         </div>
 
-        {/* Why Choose Us Section */}
+        {/* Why Choose Me Section */}
         <div className="mb-16 animate-slide-in-bottom" style={{ animationDelay: "0.8s" }}>
           <h2 className="font-handwritten text-4xl text-foreground text-center mb-8">
-            Why Collectors <span className="text-gradient">Choose Us</span>
+            Why Collectors <span className="text-gradient">Choose Me</span>
           </h2>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
@@ -118,7 +118,7 @@ const HomePage = () => {
               {
                 icon: Shield,
                 title: "Satisfaction Guaranteed",
-                description: "Not happy with your toy? We'll remake it or refund you completely"
+                description: "Not happy with your toy? I'll remake it or refund you completely"
               },
               {
                 icon: Truck,
@@ -142,7 +142,7 @@ const HomePage = () => {
         {/* Testimonials Section */}
         <div className="mb-16 animate-slide-in-bottom" style={{ animationDelay: "0.85s" }}>
           <h2 className="font-handwritten text-4xl text-foreground text-center mb-8">
-            What Our <span className="text-gradient">Customers Say</span>
+            What My <span className="text-gradient">Customers Say</span>
           </h2>
           <TestimonialsCarousel />
         </div>
@@ -150,11 +150,11 @@ const HomePage = () => {
         {/* Sample Preview CTA */}
         <div className="glass-card rounded-3xl p-8 text-center animate-slide-in-bottom" style={{ animationDelay: "0.9s" }}>
           <h2 className="font-handwritten text-4xl text-foreground mb-4">
-            Curious what we can create?
+            Curious what I can create?
           </h2>
           <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-            Check out our gallery of 64 anime character samples to see the quality 
-            and style of our 3D toys!
+            Check out my gallery of 64 anime character samples to see the quality 
+            and style of my 3D toys!
           </p>
           <Link to="/samples">
             <Button variant="cute" size="lg">

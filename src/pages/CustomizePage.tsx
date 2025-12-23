@@ -167,7 +167,7 @@ const CustomizePage = () => {
             Create Your <span className="text-gradient">Custom Toy</span>
           </h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Upload your anime OC and our AI will transform it into a 3D toy! ✨
+            Upload your anime OC and my AI will transform it into a 3D toy! ✨
           </p>
         </div>
 
@@ -218,7 +218,7 @@ const CustomizePage = () => {
                 Upload Your OC
               </h2>
               <p className="text-muted-foreground mb-8">
-                Share your anime original character image and our AI will transform it 
+                Share your anime original character image and my AI will transform it 
                 into an adorable 3D toy! Accepted formats: PNG, JPG, WEBP
               </p>
               
@@ -242,7 +242,7 @@ const CustomizePage = () => {
                   <span className="font-semibold">AI-Powered Transformation</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Our AI will automatically convert your character into a cute chibi 3D toy style!
+                  My AI will automatically convert your character into a cute chibi 3D toy style!
                 </p>
               </div>
             </div>
@@ -274,7 +274,7 @@ const CustomizePage = () => {
                 AI Magic in Progress ✨
               </h2>
               <p className="text-muted-foreground mb-4">
-                Our AI is transforming your OC into a cute 3D toy...
+                My AI is transforming your OC into a cute 3D toy...
               </p>
               <div className="flex items-center justify-center gap-2 text-primary">
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -409,7 +409,7 @@ const CustomizePage = () => {
                         rows={3}
                       />
                       <p className="text-xs text-muted-foreground">
-                        Tell us about your character or any specific details you'd like us to know
+                        Tell me about your character or any specific details you'd like me to know
                       </p>
                     </div>
 
@@ -444,7 +444,7 @@ const CustomizePage = () => {
                           <p className="text-foreground font-medium">Custom 3D Anime Toy</p>
                           <p className="text-muted-foreground text-sm">AI-Generated Design</p>
                         </div>
-                        <p className="text-xl font-bold text-foreground">$400</p>
+                        <p className="text-xl font-bold text-foreground">$1,299</p>
                       </div>
                     </div>
 
@@ -508,7 +508,7 @@ const CustomizePage = () => {
                       </li>
                       <li className="flex items-start gap-3">
                         <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm flex-shrink-0">4</span>
-                        <span>Share the screenshot on X (Twitter) and tag us!</span>
+                        <span>Share the screenshot on X (Twitter) and tag me!</span>
                       </li>
                     </ol>
                   </div>
@@ -516,7 +516,7 @@ const CustomizePage = () => {
               ) : (
                 <>
                   <p className="text-lg text-muted-foreground mb-8 max-w-md mx-auto">
-                    Thank you for your order! Please reach out to us on X to arrange payment.
+                    Thank you for your order! Please reach out to me on X to arrange payment.
                   </p>
                 </>
               )}
