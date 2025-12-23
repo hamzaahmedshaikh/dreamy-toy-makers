@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { Sparkles } from "lucide-react";
+import ImageLightbox from "@/components/ImageLightbox";
 
 // Import all sample images - Original 34
 import marinKitagawa from "@/assets/samples/marin-kitagawa.png";
@@ -68,8 +70,15 @@ import yuno from "@/assets/samples/yuno.png";
 import spike from "@/assets/samples/spike.png";
 import frieren from "@/assets/samples/frieren.png";
 
+interface Character {
+  id: number;
+  name: string;
+  anime: string;
+  image: string;
+}
+
 // Sample anime characters for the gallery
-const animeCharacters = [
+const animeCharacters: Character[] = [
   // Original 34
   { id: 1, name: "Marin Kitagawa", anime: "My Dress-Up Darling", image: marinKitagawa },
   { id: 2, name: "Zero Two", anime: "Darling in the Franxx", image: zeroTwo },
@@ -139,6 +148,8 @@ const animeCharacters = [
 ];
 
 const SamplesPage = () => {
+  const [selectedCharacter, setSelectedCharacter] = useState<Character | null>(null);
+
   return (
     <div className="min-h-screen pt-24 pb-8 px-4 watercolor-bg">
       <div className="max-w-7xl mx-auto">
@@ -154,7 +165,7 @@ const SamplesPage = () => {
           </h1>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Browse our collection of anime character 3D toys! Each one is 
-            handcrafted with love and attention to detail ✨
+            handcrafted with love and attention to detail. Click any image to view larger.
           </p>
         </div>
 
@@ -165,6 +176,7 @@ const SamplesPage = () => {
               key={character.id}
               className="group animate-scale-in"
               style={{ animationDelay: `${index * 0.02}s` }}
+              onClick={() => setSelectedCharacter(character)}
             >
               <div className="glass-card rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 hover:shadow-glow cursor-pointer">
                 {/* Toy Preview */}
@@ -200,7 +212,7 @@ const SamplesPage = () => {
         <div className="text-center mt-16 animate-slide-in-bottom" style={{ animationDelay: "1s" }}>
           <div className="glass-card rounded-3xl p-8 inline-block">
             <h2 className="font-handwritten text-3xl text-foreground mb-4">
-              Want your own custom toy? 💕
+              Want your own custom toy?
             </h2>
             <p className="text-muted-foreground mb-6">
               Upload your OC and we'll create a unique 3D toy just for you!
@@ -216,6 +228,17 @@ const SamplesPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {selectedCharacter && (
+        <ImageLightbox
+          isOpen={!!selectedCharacter}
+          onClose={() => setSelectedCharacter(null)}
+          image={selectedCharacter.image}
+          name={selectedCharacter.name}
+          anime={selectedCharacter.anime}
+        />
+      )}
     </div>
   );
 };
