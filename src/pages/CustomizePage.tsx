@@ -28,7 +28,21 @@ const CustomizePage = () => {
   const transformToToy = async (imageBase64: string) => {
     setIsTransforming(true);
     setStep("transforming");
-    
+
+    const readErrorMessage = async (resp: Response) => {
+      try {
+        const json = await resp.json();
+        return typeof json?.error === "string" ? json.error : "";
+      } catch {
+        try {
+          const text = await resp.text();
+          return text;
+        } catch {
+          return "";
+        }
+      }
+    };
+
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/transform-to-toy`,
@@ -44,12 +58,35 @@ const CustomizePage = () => {
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to transform image");
+        const msg = await readErrorMessage(response);
+
+        if (response.status === 402) {
+          toast({
+            title: "Preview unavailable",
+            description:
+              "AI usage limit reached for this workspace. Please add Lovable AI credits, then try again.",
+            variant: "destructive",
+          });
+        } else if (response.status === 429) {
+          toast({
+            title: "Too many requests",
+            description: "Please wait a moment and try again.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Preview Failed",
+            description: msg || "Failed to transform image. Please try again.",
+            variant: "destructive",
+          });
+        }
+
+        setStep("upload");
+        return;
       }
 
       const data = await response.json();
-      
+
       if (data.transformedImage) {
         setTransformedImage(data.transformedImage);
         setStep("preview");
@@ -57,14 +94,21 @@ const CustomizePage = () => {
           title: "Preview Ready! ✨",
           description: "Your OC has been transformed into a 3D toy preview!",
         });
-      } else {
-        throw new Error("No transformed image received");
+        return;
       }
+
+      toast({
+        title: "Preview Failed",
+        description: "No transformed image received. Please try again.",
+        variant: "destructive",
+      });
+      setStep("upload");
     } catch (error) {
       console.error("Transformation error:", error);
       toast({
         title: "Preview Failed",
-        description: error instanceof Error ? error.message : "Please try again",
+        description:
+          error instanceof Error ? error.message : "Unexpected error. Please try again.",
         variant: "destructive",
       });
       setStep("upload");
