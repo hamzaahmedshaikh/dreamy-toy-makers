@@ -21,18 +21,17 @@ serve(async (req) => {
       );
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY is not configured");
+    const GOOGLE_API_KEY = Deno.env.get("GOOGLE_API_KEY");
+    if (!GOOGLE_API_KEY) {
+      console.error("GOOGLE_API_KEY is not configured");
       return new Response(
         JSON.stringify({ error: "API key not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("Starting toy transformation with Lovable AI...");
+    console.log("Starting toy transformation with Google Gemini...");
 
-    // Create a detailed prompt for generating a chibi toy figure
     const prompt = `Transform this anime character into a premium 3D collectible chibi figure. The figure should have:
 - Cute oversized head with large expressive anime eyes
 - Small chibi body proportions
@@ -43,52 +42,56 @@ serve(async (req) => {
 - High quality collectible figure appearance
 Keep the character's distinctive features, colors, and outfit while making it look like a real physical toy figure.`;
 
-    console.log("Generating image with Lovable AI...");
+    // Extract base64 data from data URL
+    const base64Data = imageBase64.includes(",") 
+      ? imageBase64.split(",")[1] 
+      : imageBase64;
+    
+    // Detect mime type from data URL or default to jpeg
+    let mimeType = "image/jpeg";
+    if (imageBase64.startsWith("data:")) {
+      const match = imageBase64.match(/data:([^;]+);/);
+      if (match) mimeType = match[1];
+    }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "text",
-                text: prompt
-              },
-              {
-                type: "image_url",
-                image_url: {
-                  url: imageBase64
-                }
-              }
-            ]
-          }
-        ],
-        modalities: ["image", "text"]
-      }),
-    });
+    console.log("Calling Google Gemini API directly...");
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${GOOGLE_API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { text: prompt },
+                {
+                  inline_data: {
+                    mime_type: mimeType,
+                    data: base64Data,
+                  },
+                },
+              ],
+            },
+          ],
+          generationConfig: {
+            responseModalities: ["TEXT", "IMAGE"],
+          },
+        }),
+      }
+    );
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Lovable AI API error:", response.status, errorText);
+      console.error("Google Gemini API error:", response.status, errorText);
       
       if (response.status === 429) {
         return new Response(
           JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: "Usage limit reached. Please try again later." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
@@ -99,10 +102,21 @@ Keep the character's distinctive features, colors, and outfit while making it lo
     }
 
     const data = await response.json();
-    console.log("Lovable AI response received");
+    console.log("Google Gemini response received");
 
-    // Extract the generated image from the response
-    const generatedImage = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    // Extract the generated image from Google's response format
+    let generatedImage: string | null = null;
+    
+    for (const candidate of data.candidates || []) {
+      for (const part of candidate.content?.parts || []) {
+        if (part.inlineData?.data) {
+          const imgMime = part.inlineData.mimeType || "image/png";
+          generatedImage = `data:${imgMime};base64,${part.inlineData.data}`;
+          break;
+        }
+      }
+      if (generatedImage) break;
+    }
     
     if (!generatedImage) {
       console.error("No image in response:", JSON.stringify(data));
