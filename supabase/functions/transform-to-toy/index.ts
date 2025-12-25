@@ -13,21 +13,21 @@ serve(async (req) => {
   try {
     const { imageBase64 } = await req.json();
 
-    if (!imageBase64) {
+    if (!imageBase64 || typeof imageBase64 !== "string") {
       console.error("No image provided in request");
-      return new Response(
-        JSON.stringify({ error: "No image provided" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "No image provided" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const GOOGLE_API_KEY = Deno.env.get("GOOGLE_API_KEY");
     if (!GOOGLE_API_KEY) {
       console.error("GOOGLE_API_KEY is not configured");
-      return new Response(
-        JSON.stringify({ error: "API key not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "API key not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     console.log("Starting toy transformation with Google Gemini...");
@@ -43,10 +43,8 @@ serve(async (req) => {
 Keep the character's distinctive features, colors, and outfit while making it look like a real physical toy figure.`;
 
     // Extract base64 data from data URL
-    const base64Data = imageBase64.includes(",") 
-      ? imageBase64.split(",")[1] 
-      : imageBase64;
-    
+    const base64Data = imageBase64.includes(",") ? imageBase64.split(",")[1] : imageBase64;
+
     // Detect mime type from data URL or default to jpeg
     let mimeType = "image/jpeg";
     if (imageBase64.startsWith("data:")) {
@@ -54,14 +52,15 @@ Keep the character's distinctive features, colors, and outfit while making it lo
       if (match) mimeType = match[1];
     }
 
-    console.log("Calling Google Gemini API directly...");
+    console.log("Calling Google Gemini image model...");
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${GOOGLE_API_KEY}`,
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-goog-api-key": GOOGLE_API_KEY,
         },
         body: JSON.stringify({
           contents: [
@@ -69,8 +68,9 @@ Keep the character's distinctive features, colors, and outfit while making it lo
               parts: [
                 { text: prompt },
                 {
-                  inline_data: {
-                    mime_type: mimeType,
+                  // Note: REST uses camelCase (inlineData/mimeType) per Google docs
+                  inlineData: {
+                    mimeType,
                     data: base64Data,
                   },
                 },
@@ -85,63 +85,69 @@ Keep the character's distinctive features, colors, and outfit while making it lo
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Google Gemini API error:", response.status, errorText);
-      
-      if (response.status === 429) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again in a moment." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+      let msg = "Failed to generate image. Please try again.";
+      try {
+        const errJson = await response.json();
+        msg = errJson?.error?.message || errJson?.message || msg;
+      } catch {
+        try {
+          const errText = await response.text();
+          if (errText) msg = errText;
+        } catch {
+          // ignore
+        }
       }
 
-      return new Response(
-        JSON.stringify({ error: "Failed to generate image. Please try again." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      console.error("Google Gemini API error:", response.status, msg);
+
+      return new Response(JSON.stringify({ error: msg }), {
+        status: response.status,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     const data = await response.json();
     console.log("Google Gemini response received");
 
-    // Extract the generated image from Google's response format
+    // Extract the generated image (handle both camelCase and snake_case variants)
     let generatedImage: string | null = null;
-    
+
     for (const candidate of data.candidates || []) {
       for (const part of candidate.content?.parts || []) {
-        if (part.inlineData?.data) {
-          const imgMime = part.inlineData.mimeType || "image/png";
-          generatedImage = `data:${imgMime};base64,${part.inlineData.data}`;
+        const inline = part.inlineData ?? part.inline_data;
+        const inlineData = inline?.data;
+        if (inlineData) {
+          const imgMime = inline?.mimeType ?? inline?.mime_type ?? "image/png";
+          generatedImage = `data:${imgMime};base64,${inlineData}`;
           break;
         }
       }
       if (generatedImage) break;
     }
-    
+
     if (!generatedImage) {
       console.error("No image in response:", JSON.stringify(data));
-      return new Response(
-        JSON.stringify({ error: "No image was generated. Please try again." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ error: "No image was generated. Please try again." }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
 
     console.log("Image transformation successful");
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         transformedImage: generatedImage,
-        message: "Transformation complete!"
+        message: "Transformation complete!",
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
-
   } catch (error: unknown) {
     console.error("Error in transform-to-toy function:", error);
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
-    return new Response(
-      JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ error: errorMessage }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
