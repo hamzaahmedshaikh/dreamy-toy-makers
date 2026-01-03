@@ -52,6 +52,7 @@ const AdminPage = () => {
   const [password, setPassword] = useState("");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [editNotes, setEditNotes] = useState("");
   const [editStatus, setEditStatus] = useState("");
@@ -72,6 +73,7 @@ const AdminPage = () => {
 
   const fetchOrders = async () => {
     setLoading(true);
+    setFetchError(null);
     try {
       const { data, error } = await supabase
         .from("orders")
@@ -80,10 +82,13 @@ const AdminPage = () => {
 
       if (error) throw error;
       setOrders(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching orders:", error);
+      const errorMessage = error?.message || "Connection failed. Please try again.";
+      setFetchError(errorMessage);
       toast({
         title: "Error loading orders",
+        description: "Check your connection and try refreshing.",
         variant: "destructive",
       });
     } finally {
@@ -186,7 +191,17 @@ const AdminPage = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {orders.length === 0 ? (
+              {fetchError ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center py-12">
+                    <div className="text-destructive mb-4">{fetchError}</div>
+                    <Button onClick={fetchOrders} variant="outline" size="sm">
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Try Again
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ) : orders.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
                     No orders yet
