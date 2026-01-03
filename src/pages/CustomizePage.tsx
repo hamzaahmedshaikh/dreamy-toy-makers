@@ -1,10 +1,35 @@
 import { useState, useCallback } from "react";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, Sparkles, CheckCircle, Heart, Package, ArrowRight, Image, Loader2, Wand2, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+// Input validation schema
+const orderSchema = z.object({
+  firstName: z.string()
+    .trim()
+    .min(1, "First name is required")
+    .max(100, "First name must be less than 100 characters"),
+  lastName: z.string()
+    .trim()
+    .min(1, "Last name is required")
+    .max(100, "Last name must be less than 100 characters"),
+  paypalEmail: z.string()
+    .trim()
+    .email("Please enter a valid email address")
+    .max(255, "Email must be less than 255 characters"),
+  message: z.string()
+    .trim()
+    .max(500, "Message must be less than 500 characters")
+    .optional()
+    .or(z.literal("")),
+  paymentMethod: z.enum(["paypal", "crypto"], {
+    errorMap: () => ({ message: "Please select a valid payment method" })
+  }),
+});
 
 type OrderStep = "upload" | "transforming" | "preview" | "form" | "success";
 
@@ -143,15 +168,20 @@ const CustomizePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.paypalEmail.trim()) {
+    // Validate form data with Zod
+    const validationResult = orderSchema.safeParse(formData);
+    
+    if (!validationResult.success) {
+      const firstError = validationResult.error.errors[0];
       toast({
-        title: "Please fill all fields",
-        description: "All fields are required to complete your order",
+        title: "Validation Error",
+        description: firstError.message,
         variant: "destructive",
       });
       return;
     }
 
+    const validatedData = validationResult.data;
     setIsSubmitting(true);
 
     try {
@@ -161,7 +191,7 @@ const CustomizePage = () => {
       const { data: existingOrder } = await supabase
         .from("orders")
         .select("order_number")
-        .eq("customer_email", formData.paypalEmail.trim().toLowerCase())
+        .eq("customer_email", validatedData.paypalEmail.toLowerCase())
         .maybeSingle();
 
       if (existingOrder) {
@@ -192,16 +222,16 @@ const CustomizePage = () => {
       }
       const newOrderNumber = `SKY-${nextNum}`;
 
-      // Insert order into database
+      // Insert order into database using validated data
       const { error: insertError } = await supabase
         .from("orders")
         .insert({
           order_number: newOrderNumber,
-          customer_first_name: formData.firstName.trim(),
-          customer_last_name: formData.lastName.trim(),
-          customer_email: formData.paypalEmail.trim().toLowerCase(),
-          message: formData.message.trim() || null,
-          payment_method: formData.paymentMethod,
+          customer_first_name: validatedData.firstName,
+          customer_last_name: validatedData.lastName,
+          customer_email: validatedData.paypalEmail.toLowerCase(),
+          message: validatedData.message || null,
+          payment_method: validatedData.paymentMethod,
           reference_image_url: uploadedImage || null,
           transformed_image_url: transformedImage || null,
           status: "pending",
