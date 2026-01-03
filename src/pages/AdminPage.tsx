@@ -45,7 +45,8 @@ interface Order {
   updated_at: string;
 }
 
-const ADMIN_PASSWORD = "skylar2024"; // Simple password protection
+// Admin password should be set in environment variable for security
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "";
 
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

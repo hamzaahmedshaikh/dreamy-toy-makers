@@ -1,11 +1,26 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+// Allowed origins for CORS - add your production domains here
+const ALLOWED_ORIGINS = [
+  "https://yourprettyskylar.com",
+  "https://www.yourprettyskylar.com",
+  "https://hamzaahmedshaikh.github.io",
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+
+const getCorsHeaders = (origin: string | null) => {
+  const allowedOrigin = origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    "Access-Control-Allow-Origin": allowedOrigin,
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  };
 };
 
 serve(async (req) => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -123,10 +138,12 @@ Keep the character's distinctive features, colors, and outfit while making it lo
     );
 
   } catch (error: unknown) {
+    // Log full error server-side for debugging
     console.error("Error in transform-to-toy function:", error);
-    const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    
+    // Return generic error to client (don't expose internal details)
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "Failed to process image. Please try again." }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
