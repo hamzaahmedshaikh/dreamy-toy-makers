@@ -26,7 +26,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Package, Eye, RefreshCw, Lock, ExternalLink } from "lucide-react";
+import { Package, Eye, RefreshCw, Lock, LogOut, Loader2 } from "lucide-react";
+import type { User, Session } from "@supabase/supabase-js";
 
 interface Order {
   id: string;
@@ -45,12 +46,14 @@ interface Order {
   updated_at: string;
 }
 
-// Admin password should be set in environment variable for security
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "";
-
 const AdminPage = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -59,17 +62,123 @@ const AdminPage = () => {
   const [editStatus, setEditStatus] = useState("");
   const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
+  // Check admin role
+  const checkAdminRole = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('has_role', {
+        _user_id: userId,
+        _role: 'admin'
+      });
+      
+      if (error) {
+        console.error("Error checking admin role:", error);
+        return false;
+      }
+      
+      return data === true;
+    } catch (error) {
+      console.error("Error checking admin role:", error);
+      return false;
+    }
+  };
+
+  // Set up auth state listener
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Defer admin check with setTimeout to prevent deadlock
+        if (session?.user) {
+          setTimeout(() => {
+            checkAdminRole(session.user.id).then(isAdminUser => {
+              setIsAdmin(isAdminUser);
+              setIsCheckingAuth(false);
+              if (isAdminUser) {
+                fetchOrders();
+              }
+            });
+          }, 0);
+        } else {
+          setIsAdmin(false);
+          setIsCheckingAuth(false);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        checkAdminRole(session.user.id).then(isAdminUser => {
+          setIsAdmin(isAdminUser);
+          setIsCheckingAuth(false);
+          if (isAdminUser) {
+            fetchOrders();
+          }
+        });
+      } else {
+        setIsCheckingAuth(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      fetchOrders();
-    } else {
+    setIsLoggingIn(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
+
+      if (error) {
+        toast({
+          title: "Login Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data.user) {
+        const isAdminUser = await checkAdminRole(data.user.id);
+        if (!isAdminUser) {
+          await supabase.auth.signOut();
+          toast({
+            title: "Access Denied",
+            description: "You don't have admin privileges.",
+            variant: "destructive",
+          });
+          return;
+        }
+        
+        toast({ title: "Welcome back!" });
+      }
+    } catch (error) {
+      console.error("Login error:", error);
       toast({
-        title: "Wrong password",
+        title: "Login Failed",
+        description: "An unexpected error occurred.",
         variant: "destructive",
       });
+    } finally {
+      setIsLoggingIn(false);
     }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setOrders([]);
+    setIsAdmin(false);
+    toast({ title: "Logged out" });
   };
 
   const fetchOrders = async () => {
@@ -141,7 +250,20 @@ const AdminPage = () => {
     }
   };
 
-  if (!isAuthenticated) {
+  // Loading state
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen pt-24 pb-8 px-4 flex items-center justify-center">
+        <div className="glass-card rounded-3xl p-8 max-w-md w-full text-center">
+          <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
+          <p className="text-muted-foreground">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Login form
+  if (!user || !isAdmin) {
     return (
       <div className="min-h-screen pt-24 pb-8 px-4 flex items-center justify-center">
         <div className="glass-card rounded-3xl p-8 max-w-md w-full text-center">
@@ -149,16 +271,37 @@ const AdminPage = () => {
           <h1 className="font-handwritten text-3xl text-foreground mb-6">Admin Access</h1>
           <form onSubmit={handleLogin} className="space-y-4">
             <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Admin email"
+              className="rounded-xl"
+              required
+            />
+            <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter password"
-              className="rounded-xl text-center"
+              placeholder="Password"
+              className="rounded-xl"
+              required
             />
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full" disabled={isLoggingIn}>
+              {isLoggingIn ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
+          {user && !isAdmin && (
+            <p className="text-sm text-destructive mt-4">
+              You're logged in but don't have admin access.
+            </p>
+          )}
         </div>
       </div>
     );
@@ -172,10 +315,17 @@ const AdminPage = () => {
             <Package className="w-8 h-8 text-primary" />
             <h1 className="font-handwritten text-4xl text-foreground">Orders</h1>
           </div>
-          <Button onClick={fetchOrders} disabled={loading} variant="outline">
-            <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground hidden sm:block">
+              {user.email}
+            </span>
+            <Button onClick={fetchOrders} disabled={loading} variant="outline" size="sm">
+              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+            </Button>
+            <Button onClick={handleLogout} variant="outline" size="sm">
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         <div className="glass-card rounded-2xl overflow-hidden">
