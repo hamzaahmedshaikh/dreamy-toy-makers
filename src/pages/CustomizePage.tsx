@@ -55,6 +55,7 @@ const CustomizePage = () => {
     message: "",
     paymentMethod: "paypal",
     designBudget: "",
+    modelFileLink: "",
   });
   const { toast } = useToast();
 
@@ -312,7 +313,7 @@ const CustomizePage = () => {
     setUploadedFile(null);
     setStlFiles([]);
     setOrderNumber(null);
-    setFormData({ firstName: "", lastName: "", email: "", message: "", paymentMethod: "paypal", designBudget: "" });
+    setFormData({ firstName: "", lastName: "", email: "", message: "", paymentMethod: "paypal", designBudget: "", modelFileLink: "" });
   };
 
   const handleModelChoice = (hasOwnModel: boolean) => {
@@ -643,19 +644,29 @@ const CustomizePage = () => {
               {/* 3D Model Sharing Section (only if hasModel is true) */}
               {hasModel && (
                 <div className="mb-6 p-4 bg-green-500/10 rounded-xl border border-green-500/20">
-                  <Label className="text-green-600 dark:text-green-400 font-semibold mb-3 block">
+                  <Label htmlFor="modelFileLink" className="text-green-600 dark:text-green-400 font-semibold mb-3 block">
                     Share Your 3D Model Files
                   </Label>
-                  <div className="border-2 border-dashed border-green-500/30 rounded-xl p-4 text-center">
-                    <FileBox className="w-8 h-8 text-green-500/60 mx-auto mb-3" />
-                    <p className="text-sm text-foreground font-medium mb-2">
-                      Share your 3D model files via:
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Google Drive, Dropbox, Terabox, WeTransfer, or any other file sharing service
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Simply include the file link in your message below, and we'll discuss the details on X!
+                  <div className="border-2 border-dashed border-green-500/30 rounded-xl p-4">
+                    <div className="text-center mb-4">
+                      <FileBox className="w-8 h-8 text-green-500/60 mx-auto mb-3" />
+                      <p className="text-sm text-foreground font-medium mb-2">
+                        Share your 3D model files via:
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Google Drive, Dropbox, Terabox, WeTransfer, or any other file sharing service
+                      </p>
+                    </div>
+                    <Input
+                      id="modelFileLink"
+                      type="url"
+                      placeholder="Paste your file sharing link here..."
+                      value={formData.modelFileLink}
+                      onChange={(e) => setFormData({ ...formData, modelFileLink: e.target.value })}
+                      className="bg-background/50 border-green-500/30 focus:border-green-500/60"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2 text-center">
+                      We'll discuss the details on X after you place your order!
                     </p>
                   </div>
                 </div>
