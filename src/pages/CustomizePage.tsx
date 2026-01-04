@@ -326,36 +326,24 @@ const CustomizePage = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-8 px-4 watercolor-bg">
-      <div className="max-w-4xl mx-auto">
-        {/* Floating decorations */}
-        <div className="fixed top-32 left-8 animate-float opacity-60 pointer-events-none">
-          <Star className="w-8 h-8 text-accent fill-accent/50" />
-        </div>
-        <div className="fixed top-48 right-12 animate-float-delayed opacity-50 pointer-events-none">
-          <Heart className="w-6 h-6 text-primary fill-primary/50" />
-        </div>
-        <div className="fixed bottom-32 left-16 animate-float opacity-40 pointer-events-none">
-          <Sparkles className="w-10 h-10 text-primary" />
-        </div>
-
+    <div className="min-h-screen pt-20 pb-8 px-4 sm:px-6 watercolor-bg">
+      <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12 animate-slide-in-bottom">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-4">
-            <Wand2 className="w-4 h-4" />
-            <span className="text-sm font-medium">Custom 3D Toys</span>
-            <Sparkles className="w-4 h-4 animate-sparkle" />
+        <div className="text-center mb-8 sm:mb-10">
+          <div className="inline-flex items-center gap-2 bg-primary/8 text-primary px-3 py-1.5 rounded-full mb-4 text-sm">
+            <Wand2 className="w-3.5 h-3.5" />
+            <span className="font-medium">Custom 3D Toys</span>
           </div>
-          <h1 className="font-handwritten text-5xl sm:text-6xl text-foreground mb-4">
-            Create Your <span className="text-gradient animate-shimmer-text">Custom Toy</span>
+          <h1 className="text-3xl sm:text-4xl text-foreground mb-3">
+            Create Your <span className="text-primary">Custom Toy</span>
           </h1>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Premium 3D printed collectibles starting at <strong className="text-primary">$1,250 USD</strong>
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Starting at <strong className="text-primary">$1,250 USD</strong>
           </p>
         </div>
 
         {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-4 mb-12 animate-slide-in-bottom" style={{ animationDelay: "0.1s" }}>
+        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-8 sm:mb-10">
           {["Start", "Details", "Order", "Done"].map((label, index) => {
             const stepMapping: Record<OrderStep, number> = {
               "model-check": 0,
@@ -369,28 +357,26 @@ const CustomizePage = () => {
             const isActive = index <= currentStepIndex;
             
             return (
-              <div key={label} className="flex items-center gap-2">
+              <div key={label} className="flex items-center gap-1.5 sm:gap-2">
                 <div className={`
-                  w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm
-                  transition-all duration-500 transform
+                  w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-xs sm:text-sm font-medium
+                  transition-all duration-300
                   ${isActive 
-                    ? "bg-primary text-primary-foreground shadow-glow scale-110" 
+                    ? "bg-primary text-primary-foreground" 
                     : "bg-muted text-muted-foreground"
                   }
-                  ${step === "transforming" && index === 1 ? "animate-pulse-glow" : ""}
-                  ${isActive ? "animate-pop-in" : ""}
                 `}>
                   {step === "transforming" && index === 1 ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     index + 1
                   )}
                 </div>
-                <span className={`hidden sm:block text-sm transition-colors duration-300 ${isActive ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+                <span className={`hidden sm:block text-xs transition-colors ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                   {label}
                 </span>
                 {index < 3 && (
-                  <div className={`w-8 h-1 rounded-full transition-all duration-500 ${isActive ? "bg-primary" : "bg-muted"}`} />
+                  <div className={`w-6 sm:w-8 h-0.5 rounded-full transition-all ${isActive ? "bg-primary" : "bg-muted"}`} />
                 )}
               </div>
             );
@@ -398,99 +384,88 @@ const CustomizePage = () => {
         </div>
 
         {/* Step Content */}
-        <div className="animate-scale-in">
+        <div>
           {/* Model Check Step */}
           {step === "model-check" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                <FileBox className="w-12 h-12 text-primary" />
+            <div className="glass-card rounded-2xl p-6 sm:p-8 text-center max-w-xl mx-auto">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/8 flex items-center justify-center mx-auto mb-5">
+                <FileBox className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
               </div>
               
-              <h2 className="font-handwritten text-3xl text-foreground mb-4">
+              <h2 className="text-xl sm:text-2xl text-foreground mb-3">
                 Do You Have a 3D Model?
               </h2>
-              <p className="text-muted-foreground mb-8">
-                If you already have an STL file or 3D model ready, you can upload it directly. 
-                Otherwise, I'll design a custom 3D model for you based on your character artwork.
+              <p className="text-sm sm:text-base text-muted-foreground mb-6">
+                If you have an STL file ready, share it with me. Otherwise, I'll design a custom 3D model based on your artwork.
               </p>
               
-              <div className="grid sm:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <button
                   onClick={() => handleModelChoice(true)}
-                  className="glass-card p-6 rounded-2xl hover:shadow-glow hover:scale-105 transition-all duration-300 text-left group"
+                  className="glass-card p-5 rounded-xl text-left transition-all duration-200 hover:border-primary/30"
                 >
-                  <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <CheckCircle className="w-8 h-8 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center mb-3">
+                    <CheckCircle className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg text-foreground mb-2">Yes, I Have a Model</h3>
-                  <p className="text-base text-muted-foreground">
-                    Share your STL or other 3D files and I'll print it for you.
+                  <h3 className="font-medium text-foreground mb-1">Yes, I Have a Model</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Share your 3D files via cloud link
                   </p>
                 </button>
 
                 <button
                   onClick={() => handleModelChoice(false)}
-                  className="glass-card p-6 rounded-2xl hover:shadow-glow hover:scale-105 transition-all duration-300 text-left group"
+                  className="glass-card p-5 rounded-xl text-left transition-all duration-200 hover:border-primary/30"
                 >
-                  <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Wand2 className="w-8 h-8 text-primary" />
+                  <div className="w-12 h-12 rounded-full bg-primary/8 flex items-center justify-center mb-3">
+                    <Wand2 className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold text-lg text-foreground mb-2">No, Design It For Me</h3>
-                  <p className="text-base text-muted-foreground">
-                    I'll create a custom 3D model based on your character artwork.
+                  <h3 className="font-medium text-foreground mb-1">No, Design It For Me</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Custom 3D design (paid service)
                   </p>
-                  <div className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-medium">
-                    <Sparkles className="w-4 h-4" />
-                    Professional 3D illustration (paid service)
-                  </div>
                 </button>
               </div>
             </div>
           )}
 
           {step === "upload" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
-                <Upload className="w-12 h-12 text-primary" />
+            <div className="glass-card rounded-2xl p-6 sm:p-8 text-center max-w-xl mx-auto">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/8 flex items-center justify-center mx-auto mb-5">
+                <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
               </div>
               
-              <h2 className="font-handwritten text-3xl text-foreground mb-4">
+              <h2 className="text-xl sm:text-2xl text-foreground mb-3">
                 Upload Your OC
               </h2>
-              <p className="text-muted-foreground mb-8">
-                Share your anime original character image and I'll transform it 
-                into an adorable 3D toy preview! Accepted formats: PNG, JPG, WEBP
+              <p className="text-sm sm:text-base text-muted-foreground mb-6">
+                Share your character image. Accepted: PNG, JPG, WEBP
               </p>
               
-              <label className="cursor-pointer group">
+              <label className="cursor-pointer block">
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
                 />
-                <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-glow">
-                  <Image className="w-16 h-16 text-primary/40 mx-auto mb-4 group-hover:scale-110 transition-transform" />
-                  <p className="text-foreground font-semibold mb-2">Click to upload or drag & drop</p>
-                  <p className="text-muted-foreground text-sm">Max file size: 10MB</p>
+                <div className="border-2 border-dashed border-primary/20 rounded-xl p-6 sm:p-8 hover:border-primary/40 hover:bg-primary/2 transition-all">
+                  <Image className="w-12 h-12 text-primary/30 mx-auto mb-3" />
+                  <p className="text-foreground font-medium mb-1">Click to upload</p>
+                  <p className="text-muted-foreground text-sm">Max 10MB</p>
                 </div>
               </label>
 
-              <div className="mt-8 p-4 bg-accent/10 rounded-xl border border-accent/20">
-                <div className="flex items-center justify-center gap-2 text-accent mb-2">
-                  <Sparkles className="w-5 h-5" />
-                  <span className="font-semibold">3D Design Service</span>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  3D model design is a <strong>paid service</strong> as it involves professional 3D illustration artwork. 
-                  You'll tell me your budget in the next step!
+              <div className="mt-6 p-4 bg-accent/30 rounded-xl">
+                <p className="text-sm text-foreground">
+                  <strong>Note:</strong> 3D design is a paid service. You'll set your budget next.
                 </p>
               </div>
 
               <Button
                 variant="ghost"
                 onClick={() => setStep("model-check")}
-                className="mt-6"
+                className="mt-5 text-sm"
               >
                 ← Back
               </Button>
@@ -498,294 +473,231 @@ const CustomizePage = () => {
           )}
 
           {step === "transforming" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto">
-              <div className="relative w-32 h-32 mx-auto mb-8">
+            <div className="glass-card rounded-2xl p-6 sm:p-8 text-center max-w-xl mx-auto">
+              <div className="relative w-24 h-24 sm:w-28 sm:h-28 mx-auto mb-6">
                 {uploadedImage && (
                   <img
                     src={uploadedImage}
                     alt="Your OC"
-                    className="w-full h-full object-cover rounded-2xl opacity-50 animate-pulse"
+                    className="w-full h-full object-cover rounded-xl opacity-50"
                   />
                 )}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center animate-pulse-glow">
-                    <Wand2 className="w-10 h-10 text-primary" />
+                  <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center">
+                    <Loader2 className="w-7 h-7 text-primary animate-spin" />
                   </div>
                 </div>
-                <Sparkles className="absolute -top-2 -right-2 w-8 h-8 text-primary animate-sparkle" />
-                <Sparkles className="absolute -bottom-2 -left-2 w-6 h-6 text-accent animate-sparkle" style={{ animationDelay: "0.3s" }} />
-                <Star className="absolute top-0 left-0 w-5 h-5 text-accent fill-accent animate-twinkle" style={{ animationDelay: "0.5s" }} />
-                <Heart className="absolute bottom-0 right-0 w-5 h-5 text-primary fill-primary animate-heartbeat" />
               </div>
               
-              <h2 className="font-handwritten text-3xl text-foreground mb-4 animate-pulse-soft">
-                Creating Your Preview ✨
+              <h2 className="text-xl sm:text-2xl text-foreground mb-2">
+                Creating Preview...
               </h2>
-              <p className="text-muted-foreground mb-4">
-                Transforming your OC into a cute 3D toy...
+              <p className="text-sm text-muted-foreground">
+                This may take a moment
               </p>
-              <div className="flex items-center justify-center gap-2">
-                <Loader2 className="w-5 h-5 animate-spin text-primary" />
-                <span className="text-sm text-muted-foreground animate-pulse">This may take a moment</span>
-              </div>
-              
-              <div className="mt-6 flex justify-center gap-2">
-                {[...Array(5)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className="w-2 h-2 rounded-full bg-primary animate-pulse" 
-                    style={{ animationDelay: `${i * 0.15}s` }}
-                  />
-                ))}
-              </div>
             </div>
           )}
 
           {step === "preview" && transformedImage && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-4xl mx-auto animate-pop-in">
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center gap-2 mb-4">
-                  <Sparkles className="w-6 h-6 text-primary animate-sparkle" />
-                  <h2 className="font-handwritten text-3xl text-foreground">
-                    Your 3D Toy Preview!
-                  </h2>
-                  <Sparkles className="w-6 h-6 text-primary animate-sparkle" style={{ animationDelay: "0.5s" }} />
-                </div>
-                <p className="text-muted-foreground">
-                  Here's how your custom toy will look. Ready to order?
+            <div className="glass-card rounded-2xl p-6 sm:p-8 max-w-2xl mx-auto">
+              <div className="text-center mb-6">
+                <h2 className="text-xl sm:text-2xl text-foreground mb-2">
+                  Your 3D Toy Preview
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Ready to order?
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8 mb-8">
-                <div className="text-center group">
-                  <p className="text-sm text-muted-foreground mb-3">Your Original OC</p>
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-muted/20 border-2 border-muted group-hover:border-primary/50 transition-all duration-300 group-hover:shadow-soft">
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground mb-2">Original</p>
+                  <div className="aspect-square rounded-xl overflow-hidden bg-muted/20 border border-border">
                     {uploadedImage && (
                       <img
                         src={uploadedImage}
                         alt="Original OC"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover"
                       />
                     )}
                   </div>
                 </div>
 
-                <div className="text-center group">
-                  <p className="text-sm text-muted-foreground mb-3 flex items-center justify-center gap-2">
-                    <Star className="w-4 h-4 text-accent fill-accent animate-twinkle" />
-                    3D Toy Preview
-                    <Star className="w-4 h-4 text-accent fill-accent animate-twinkle" style={{ animationDelay: "0.3s" }} />
-                  </p>
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-primary/10 to-secondary/10 border-2 border-primary/30 relative group-hover:shadow-glow transition-all duration-500">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground mb-2">3D Preview</p>
+                  <div className="aspect-square rounded-xl overflow-hidden bg-primary/5 border border-primary/20">
                     <img
                       src={transformedImage}
                       alt="3D Toy Preview"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-3 right-3">
-                      <Sparkles className="w-6 h-6 text-primary animate-sparkle" />
-                    </div>
-                    <div className="absolute bottom-3 left-3">
-                      <Heart className="w-5 h-5 text-primary fill-primary animate-heartbeat" />
-                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="text-center space-y-4">
-                <div className="inline-block bg-primary/10 rounded-2xl px-8 py-4 animate-pulse-soft">
-                  <p className="text-sm text-muted-foreground mb-1">Custom Toy Price</p>
-                  <p className="font-handwritten text-4xl text-primary">$1,250 USD</p>
-                  <p className="text-xs text-muted-foreground mt-1">+ 3D design fee (you choose your budget)</p>
+              <div className="text-center mb-6">
+                <div className="inline-block bg-primary/8 rounded-full px-5 py-2">
+                  <span className="text-sm text-muted-foreground">Starting at </span>
+                  <span className="text-lg font-semibold text-primary">$1,250</span>
                 </div>
+              </div>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button
-                    onClick={() => setStep("form")}
-                    className="btn-kawaii text-lg px-8 py-6 group"
-                  >
-                    <Heart className="w-5 h-5 mr-2 group-hover:animate-heartbeat" />
-                    I Love It! Order Now
-                    <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    onClick={resetOrder}
-                    className="text-lg px-8 py-6 hover:scale-105 transition-transform"
-                  >
-                    Try Different Image
-                  </Button>
-                </div>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={() => setStep("form")}
+                  className="btn-kawaii rounded-full"
+                >
+                  <Heart className="w-4 h-4 mr-1.5" />
+                  Order Now
+                  <ArrowRight className="w-4 h-4 ml-1.5" />
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={resetOrder}
+                  className="rounded-full"
+                >
+                  Try Different Image
+                </Button>
               </div>
             </div>
           )}
 
           {step === "form" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 max-w-2xl mx-auto animate-slide-up">
+            <div className="glass-card rounded-2xl p-6 sm:p-8 max-w-xl mx-auto">
               {transformedImage && (
-                <div className="flex justify-center mb-8">
-                  <div className="relative group">
-                    <img
-                      src={transformedImage}
-                      alt="Your 3D Toy"
-                      className="w-32 h-32 object-cover rounded-2xl border-2 border-primary/30 group-hover:scale-110 transition-transform duration-300"
-                    />
-                    <Sparkles className="absolute -top-2 -right-2 w-6 h-6 text-primary animate-sparkle" />
-                    <Heart className="absolute -bottom-2 -left-2 w-5 h-5 text-primary fill-primary animate-heartbeat" />
-                  </div>
+                <div className="flex justify-center mb-5">
+                  <img
+                    src={transformedImage}
+                    alt="Your 3D Toy"
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl border border-primary/20"
+                  />
                 </div>
               )}
 
-              <h2 className="font-handwritten text-3xl text-foreground mb-6 text-center">
+              <h2 className="text-xl sm:text-2xl text-foreground mb-5 text-center">
                 Complete Your Order
               </h2>
 
               {/* 3D Model Sharing Section (only if hasModel is true) */}
               {hasModel && (
-                <div className="mb-6 p-5 bg-secondary/50 rounded-xl border border-primary/20">
-                  <Label htmlFor="modelFileLink" className="text-primary font-semibold mb-3 block text-base">
+                <div className="mb-5 p-4 bg-secondary/30 rounded-xl">
+                  <Label htmlFor="modelFileLink" className="text-primary font-medium mb-2 block text-sm">
                     Share Your 3D Model Files
                   </Label>
-                  <div className="border-2 border-dashed border-primary/30 rounded-xl p-5">
-                    <div className="text-center mb-4">
-                      <FileBox className="w-10 h-10 text-primary/60 mx-auto mb-3" />
-                      <p className="text-base text-foreground font-medium mb-2">
-                        Share your 3D model files via:
-                      </p>
-                      <p className="text-base text-muted-foreground">
-                        Google Drive, Dropbox, Terabox, WeTransfer, or any other file sharing service
-                      </p>
-                    </div>
-                    <Input
-                      id="modelFileLink"
-                      type="url"
-                      placeholder="Paste your file sharing link here..."
-                      value={formData.modelFileLink}
-                      onChange={(e) => setFormData({ ...formData, modelFileLink: e.target.value })}
-                      className="bg-background/50 border-primary/30 focus:border-primary/60 text-base"
-                    />
-                    <p className="text-sm text-muted-foreground mt-3 text-center">
-                      We'll discuss the details on X after you place your order!
+                  <div className="text-center mb-3">
+                    <p className="text-sm text-muted-foreground">
+                      Google Drive, Dropbox, WeTransfer, etc.
                     </p>
                   </div>
+                  <Input
+                    id="modelFileLink"
+                    type="url"
+                    placeholder="Paste your file link here..."
+                    value={formData.modelFileLink}
+                    onChange={(e) => setFormData({ ...formData, modelFileLink: e.target.value })}
+                    className="bg-background/50 rounded-lg text-sm"
+                  />
                 </div>
               )}
               
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="firstName" className="text-sm">First Name</Label>
                     <Input
                       id="firstName"
                       value={formData.firstName}
                       onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                      placeholder="Your first name"
-                      className="rounded-xl focus:ring-2 focus:ring-primary/50 transition-all"
+                      placeholder="First name"
+                      className="rounded-lg text-sm"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="lastName" className="text-sm">Last Name</Label>
                     <Input
                       id="lastName"
                       value={formData.lastName}
                       onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                      placeholder="Your last name"
-                      className="rounded-xl focus:ring-2 focus:ring-primary/50 transition-all"
+                      placeholder="Last name"
+                      className="rounded-lg text-sm"
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-sm">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                     placeholder="your@email.com"
-                    className="rounded-xl focus:ring-2 focus:ring-primary/50 transition-all"
+                    className="rounded-lg text-sm"
                   />
                 </div>
 
                 {/* Design Budget (only if they don't have a model) */}
                 {!hasModel && (
-                  <div className="space-y-2">
-                    <Label htmlFor="designBudget" className="flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-primary" />
-                      3D Design Budget
-                    </Label>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="designBudget" className="text-sm">3D Design Budget</Label>
                     <Input
                       id="designBudget"
                       value={formData.designBudget}
                       onChange={(e) => setFormData(prev => ({ ...prev, designBudget: e.target.value }))}
-                      placeholder="How much are you comfortable paying for the 3D design? (e.g., $200, $500)"
-                      className="rounded-xl focus:ring-2 focus:ring-primary/50 transition-all"
+                      placeholder="e.g., $200, $500"
+                      className="rounded-lg text-sm"
                     />
                     <p className="text-xs text-muted-foreground">
-                      3D design is a professional service. We'll discuss final pricing on X.
+                      We'll discuss final pricing on X
                     </p>
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="message">Special Requests (Optional)</Label>
+                <div className="space-y-1.5">
+                  <Label htmlFor="message" className="text-sm">Special Requests (Optional)</Label>
                   <Textarea
                     id="message"
                     value={formData.message}
                     onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                    placeholder="Any special requests or notes..."
-                    className="rounded-xl focus:ring-2 focus:ring-primary/50 transition-all min-h-[80px]"
+                    placeholder="Any special requests..."
+                    className="rounded-lg text-sm min-h-[60px]"
                   />
                 </div>
 
-                <div className="space-y-3">
-                  <Label>Preferred Payment Method</Label>
+                <div className="space-y-2">
+                  <Label className="text-sm">Payment Method</Label>
                   <RadioGroup
                     value={formData.paymentMethod}
                     onValueChange={(value) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
-                    className="grid grid-cols-2 gap-4"
+                    className="grid grid-cols-2 gap-2"
                   >
-                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02]">
-                      <RadioGroupItem value="paypal" id="paypal" />
-                      <Label htmlFor="paypal" className="cursor-pointer">PayPal</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02]">
-                      <RadioGroupItem value="venmo" id="venmo" />
-                      <Label htmlFor="venmo" className="cursor-pointer">Venmo</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02]">
-                      <RadioGroupItem value="payoneer" id="payoneer" />
-                      <Label htmlFor="payoneer" className="cursor-pointer">Payoneer</Label>
-                    </div>
-                    <div className="flex items-center space-x-2 p-4 rounded-xl border-2 border-muted hover:border-primary/50 transition-all cursor-pointer hover:scale-[1.02]">
-                      <RadioGroupItem value="remitly" id="remitly" />
-                      <Label htmlFor="remitly" className="cursor-pointer">Remitly</Label>
-                    </div>
+                    {["paypal", "venmo", "payoneer", "remitly"].map((method) => (
+                      <div key={method} className="flex items-center space-x-2 p-3 rounded-lg border border-border hover:border-primary/30 transition-all cursor-pointer">
+                        <RadioGroupItem value={method} id={method} />
+                        <Label htmlFor={method} className="cursor-pointer text-sm capitalize">{method}</Label>
+                      </div>
+                    ))}
                   </RadioGroup>
-                  <p className="text-xs text-muted-foreground text-center">
-                    We'll discuss final payment details on X
-                  </p>
                 </div>
 
-                <div className="bg-primary/5 rounded-xl p-4 text-center animate-pulse-soft">
-                  <p className="text-sm text-muted-foreground mb-1">Base Price</p>
-                  <p className="font-handwritten text-3xl text-primary">$1,250 USD</p>
+                <div className="bg-primary/5 rounded-xl p-4 text-center">
+                  <span className="text-sm text-muted-foreground">Base Price: </span>
+                  <span className="text-lg font-semibold text-primary">$1,250</span>
                   {!hasModel && (
-                    <p className="text-xs text-muted-foreground mt-1">+ 3D design fee (based on your budget)</p>
+                    <span className="text-xs text-muted-foreground block mt-1">+ design fee</span>
                   )}
                 </div>
 
-                <Button type="submit" disabled={isSubmitting} className="btn-kawaii w-full text-lg py-6 group">
+                <Button type="submit" disabled={isSubmitting} className="btn-kawaii w-full rounded-full">
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                       Placing Order...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2 group-hover:animate-sparkle" />
-                      Place Order & Chat on X
+                      Place Order
                       <ExternalLink className="w-4 h-4 ml-2" />
                     </>
                   )}
@@ -795,73 +707,50 @@ const CustomizePage = () => {
           )}
 
           {step === "success" && (
-            <div className="glass-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto animate-pop-in">
-              <div className="w-24 h-24 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-12 h-12 text-green-500 animate-pop-in" />
+            <div className="glass-card rounded-2xl p-6 sm:p-8 text-center max-w-xl mx-auto relative">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-5">
+                <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-primary" />
               </div>
               
-              {/* Celebration confetti */}
-              <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                {[...Array(12)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute animate-confetti"
-                    style={{
-                      left: `${10 + (i * 8)}%`,
-                      animationDelay: `${i * 0.1}s`,
-                      backgroundColor: i % 3 === 0 ? 'hsl(var(--primary))' : i % 3 === 1 ? 'hsl(var(--accent))' : 'hsl(var(--sky))',
-                      width: '8px',
-                      height: '8px',
-                      borderRadius: i % 2 === 0 ? '50%' : '0',
-                    }}
-                  />
-                ))}
-              </div>
-              
-              <h2 className="font-handwritten text-4xl text-foreground mb-4">
-                Order Confirmed! 🎉
+              <h2 className="text-xl sm:text-2xl text-foreground mb-3">
+                Order Confirmed!
               </h2>
 
-              {/* Display Order Number */}
               {orderNumber && (
-                <div className="bg-primary/10 rounded-2xl px-8 py-4 mb-6 inline-block">
-                  <p className="text-sm text-muted-foreground mb-1">Your Order Number</p>
-                  <p className="font-handwritten text-4xl text-primary">{orderNumber}</p>
+                <div className="bg-primary/8 rounded-full px-5 py-2 mb-4 inline-block">
+                  <span className="text-xs text-muted-foreground">Order: </span>
+                  <span className="text-base font-semibold text-primary">{orderNumber}</span>
                 </div>
               )}
               
-              <p className="text-muted-foreground mb-8 text-lg">
-                <strong>DM me on X (@whatsupskylar) with your order number "{orderNumber}"</strong> to discuss payment and finalize your order. 
-                Can't wait to create your toy! 💕
+              <p className="text-sm text-muted-foreground mb-5">
+                DM me on X <strong>@whatsupskylar</strong> with your order number to finalize payment.
               </p>
 
               {transformedImage && (
-                <div className="mb-8 relative inline-block">
+                <div className="mb-5">
                   <img
                     src={transformedImage}
                     alt="Your Custom Toy"
-                    className="w-48 h-48 object-cover rounded-2xl mx-auto border-4 border-primary/30 shadow-glow animate-float-subtle"
+                    className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-xl mx-auto border border-primary/20"
                   />
-                  <Sparkles className="absolute -top-3 -right-3 w-8 h-8 text-primary animate-sparkle" />
-                  <Heart className="absolute -bottom-3 -left-3 w-7 h-7 text-primary fill-primary animate-heartbeat" />
                 </div>
               )}
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-center gap-2 text-muted-foreground animate-slide-in-bottom">
-                  <Package className="w-5 h-5" />
-                  <span>Estimated delivery: 2-3 weeks after payment</span>
-                </div>
+              <div className="space-y-3">
+                <p className="text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+                  <Package className="w-3.5 h-3.5" />
+                  Delivery: 2-3 weeks after payment
+                </p>
                 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button onClick={resetOrder} variant="outline" className="rounded-xl hover:scale-105 transition-transform">
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button onClick={resetOrder} variant="outline" className="rounded-full text-sm">
                     Order Another
                   </Button>
-                  <Button asChild className="btn-kawaii group">
+                  <Button asChild className="btn-kawaii rounded-full text-sm">
                     <a href="https://x.com/whatsupskylar" target="_blank" rel="noopener noreferrer">
-                      <Heart className="w-4 h-4 mr-2 group-hover:animate-heartbeat" />
-                      DM Me on X
-                      <ExternalLink className="w-4 h-4 ml-2" />
+                      DM on X
+                      <ExternalLink className="w-3.5 h-3.5 ml-1.5" />
                     </a>
                   </Button>
                 </div>
