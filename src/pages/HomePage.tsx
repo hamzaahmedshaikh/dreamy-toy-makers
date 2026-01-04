@@ -7,142 +7,133 @@ import { useSoundEffect } from "@/hooks/useSoundEffect";
 const HomePage = () => {
   const { playSound } = useSoundEffect();
   return (
-    <div className="min-h-screen pt-24 pb-8 px-4 watercolor-bg">
+    <div className="min-h-screen pt-20 pb-8 px-4 sm:px-6 watercolor-bg">
       {/* Hero Section */}
-      <section className="max-w-6xl mx-auto">
-        <div className="text-center mb-16">
+      <section className="max-w-4xl mx-auto">
+        <div className="text-center mb-12 sm:mb-16">
           {/* Animated Badge */}
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full mb-8">
-            <Sparkles className="w-4 h-4 animate-sparkle" />
-            <span className="text-sm font-medium">Handcrafted with Love</span>
-            <Heart className="w-4 h-4 fill-primary animate-heartbeat" />
+          <div className="inline-flex items-center gap-2 bg-primary/8 text-primary px-3 py-1.5 rounded-full mb-6 sm:mb-8 text-sm">
+            <Heart className="w-3.5 h-3.5 fill-primary" />
+            <span className="font-medium">Handcrafted with Love</span>
           </div>
 
           {/* Main Heading */}
-          <h1 className="font-handwritten text-6xl sm:text-7xl md:text-8xl text-foreground mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl text-foreground mb-4 sm:mb-6 tracking-tight">
             Your Anime OC,
             <br />
-            <span className="text-gradient animate-shimmer-text">Now a 3D Toy!</span>
+            <span className="text-primary">Now a 3D Toy</span>
           </h1>
 
           {/* Description */}
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 leading-relaxed">
-            Transform your favorite Original Character into an adorable, 
-            high-quality 3D printed collectible toy. Each piece is uniquely 
-            crafted to capture every detail of your character!
+          <p className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto mb-6 sm:mb-8 px-4">
+            Transform your Original Character into a beautiful 
+            high-quality 3D printed collectible toy.
           </p>
 
           {/* Price Tag */}
-          <div className="inline-block glass-card rounded-2xl px-6 py-4 mb-8 hover:shadow-glow transition-all duration-300 hover:scale-105">
-            <div className="flex items-center gap-3">
-              <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
-              <div className="text-left">
-                <p className="text-sm text-muted-foreground">Premium Collectible</p>
-                <p className="text-3xl font-bold text-foreground">$1,250 <span className="text-base font-normal text-muted-foreground">USD</span></p>
-              </div>
-              <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
+          <div className="inline-block glass-card rounded-full px-5 py-3 sm:px-6 sm:py-4 mb-6 sm:mb-8">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-xs sm:text-sm text-muted-foreground">Starting at</span>
+              <span className="text-xl sm:text-2xl font-semibold text-foreground">$1,250</span>
+              <span className="text-xs sm:text-sm text-muted-foreground">USD</span>
             </div>
           </div>
 
           {/* CTA Button */}
           <div>
             <Link to="/customize">
-              <Button variant="hero" size="xl" className="group" onClick={playSound}>
-                <Wand2 className="w-5 h-5" />
-                Place Your Order Now
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <Button variant="hero" size="lg" className="group rounded-full px-6 sm:px-8" onClick={playSound}>
+                <Wand2 className="w-4 h-4" />
+                <span className="mx-1">Place Your Order</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </Link>
           </div>
 
           {/* Trust Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-12">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10">
             {[
-              { icon: Heart, text: "100% Handmade", fill: true },
-              { icon: Star, text: "Premium Quality", fill: true },
-              { icon: Sparkles, text: "Unique Design", fill: false },
+              { icon: Heart, text: "Handmade" },
+              { icon: Star, text: "Premium" },
+              { icon: Sparkles, text: "Unique" },
             ].map((badge) => (
               <div 
                 key={badge.text} 
-                className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group cursor-default"
+                className="flex items-center gap-1.5 text-muted-foreground text-sm"
               >
-                <badge.icon className={`w-4 h-4 text-primary ${badge.fill ? 'fill-primary' : ''}`} />
-                <span className="text-sm">{badge.text}</span>
+                <badge.icon className="w-3.5 h-3.5 text-primary" />
+                <span>{badge.text}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-6 mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12 sm:mb-16">
           {[
             {
               icon: Heart,
               title: "Upload Your OC",
-              description: "Share your anime character design and I'll bring it to life",
+              description: "Share your character design",
             },
             {
               icon: Wand2,
               title: "Preview Your Toy",
-              description: "See exactly how your character will look as a 3D toy before ordering",
+              description: "See how it will look",
             },
             {
               icon: Gift,
               title: "Receive Your Toy",
-              description: "Get your adorable collectible delivered to your door",
+              description: "Delivered to your door",
             },
           ].map((feature) => (
             <div
               key={feature.title}
-              className="glass-card rounded-3xl p-8 text-center hover:scale-105 transition-all duration-300 hover:shadow-glow group"
+              className="glass-card rounded-2xl p-5 sm:p-6 text-center"
             >
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                <feature.icon className="w-8 h-8 text-primary" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary/8 flex items-center justify-center mx-auto mb-3">
+                <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
-              <h3 className="font-handwritten text-2xl text-foreground mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground">{feature.description}</p>
+              <h3 className="text-base sm:text-lg font-medium text-foreground mb-1">{feature.title}</h3>
+              <p className="text-sm text-muted-foreground">{feature.description}</p>
             </div>
           ))}
         </div>
 
         {/* Why Choose Me Section */}
-        <div className="mb-16">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <Sparkles className="w-5 h-5 text-primary animate-sparkle" />
-              <h2 className="font-handwritten text-4xl text-foreground">
-                Why Collectors <span className="text-gradient">Choose Me</span>
-              </h2>
-              <Sparkles className="w-5 h-5 text-primary animate-sparkle" />
-            </div>
+        <div className="mb-12 sm:mb-16">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl text-foreground">
+              Why Collectors Choose Me
+            </h2>
           </div>
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="grid gap-3 sm:gap-4">
             {[
               {
                 icon: Award,
                 title: "Museum-Grade Quality",
-                description: "Premium PVC material with hand-painted details that last a lifetime"
+                description: "Premium PVC with hand-painted details"
               },
               {
                 icon: Shield,
                 title: "Satisfaction Guaranteed",
-                description: "Not happy with your toy? I'll remake it or refund you completely"
+                description: "Full refund if you're not happy"
               },
               {
                 icon: Truck,
                 title: "Worldwide Shipping",
-                description: "Insured shipping to 100+ countries with tracking included"
+                description: "Insured delivery to 100+ countries"
               }
             ].map((item) => (
               <div 
                 key={item.title} 
-                className="flex items-start gap-4 glass-card rounded-2xl p-6 hover:shadow-glow transition-all duration-300 hover:scale-[1.02] group"
+                className="flex items-center gap-4 glass-card rounded-xl p-4 sm:p-5"
               >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                  <item.icon className="w-6 h-6 text-primary" />
+                <div className="w-10 h-10 rounded-full bg-primary/8 flex items-center justify-center flex-shrink-0">
+                  <item.icon className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">{item.title}</h3>
+                  <h3 className="font-medium text-foreground">{item.title}</h3>
                   <p className="text-sm text-muted-foreground">{item.description}</p>
                 </div>
               </div>
@@ -151,38 +142,28 @@ const HomePage = () => {
         </div>
 
         {/* Testimonials Section */}
-        <div className="mb-16">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 mb-4">
-              <Heart className="w-5 h-5 text-primary fill-primary animate-heartbeat" />
-              <h2 className="font-handwritten text-4xl text-foreground">
-                What My <span className="text-gradient">Customers Say</span>
-              </h2>
-              <Heart className="w-5 h-5 text-primary fill-primary animate-heartbeat" />
-            </div>
+        <div className="mb-12 sm:mb-16">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl text-foreground">
+              What Customers Say
+            </h2>
           </div>
           <TestimonialsCarousel />
         </div>
 
         {/* Sample Preview CTA */}
-        <div className="glass-card rounded-3xl p-8 text-center hover:shadow-glow transition-all duration-300 group">
-          <div className="flex justify-center gap-2 mb-4">
-            <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
-            <Star className="w-5 h-5 text-accent fill-accent animate-twinkle" />
-            <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
-          </div>
-          <h2 className="font-handwritten text-4xl text-foreground mb-4">
+        <div className="glass-card rounded-2xl p-6 sm:p-8 text-center">
+          <h2 className="text-xl sm:text-2xl text-foreground mb-3">
             Curious what I can create?
           </h2>
-          <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
-            Check out my gallery of 64 anime character samples to see the quality 
-            and style of my 3D toys!
+          <p className="text-muted-foreground mb-5 text-sm sm:text-base max-w-md mx-auto">
+            Check out my gallery of 64 anime character samples
           </p>
           <Link to="/samples">
-            <Button variant="cute" size="lg" className="group/btn hover:scale-105 transition-transform">
-              <Sparkles className="w-4 h-4 group-hover/btn:animate-sparkle" />
-              View Sample Gallery
-              <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+            <Button variant="cute" size="default" className="rounded-full">
+              <Sparkles className="w-4 h-4" />
+              View Gallery
+              <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
         </div>
