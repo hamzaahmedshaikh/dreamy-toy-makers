@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Heart, Sparkles, Home, Image, User, FileText, Wand2 } from "lucide-react";
+import ThemeToggle from "./ThemeToggle";
 
 const Navigation = () => {
   const location = useLocation();
@@ -57,6 +58,9 @@ const Navigation = () => {
                 </Link>
               );
             })}
+            
+            {/* Theme Toggle */}
+            <ThemeToggle />
           </div>
         </div>
       </div>
