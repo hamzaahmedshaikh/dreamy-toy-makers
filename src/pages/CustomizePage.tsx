@@ -640,43 +640,24 @@ const CustomizePage = () => {
                 Complete Your Order
               </h2>
 
-              {/* STL Upload Section (only if hasModel is true) */}
+              {/* 3D Model Sharing Section (only if hasModel is true) */}
               {hasModel && (
                 <div className="mb-6 p-4 bg-green-500/10 rounded-xl border border-green-500/20">
                   <Label className="text-green-600 dark:text-green-400 font-semibold mb-3 block">
-                    Upload Your 3D Model Files
+                    Share Your 3D Model Files
                   </Label>
-                  <label className="cursor-pointer">
-                    <input
-                      type="file"
-                      accept=".stl,.obj,.fbx,.3ds,.blend,.ply,.gltf,.glb"
-                      multiple
-                      onChange={handleStlUpload}
-                      className="hidden"
-                    />
-                    <div className="border-2 border-dashed border-green-500/30 rounded-xl p-4 hover:border-green-500/60 hover:bg-green-500/5 transition-all text-center">
-                      <FileBox className="w-8 h-8 text-green-500/60 mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">
-                        Click to upload STL, OBJ, FBX, or other 3D files (max 50MB each)
-                      </p>
-                    </div>
-                  </label>
-                  {stlFiles.length > 0 && (
-                    <div className="mt-3 space-y-2">
-                      {stlFiles.map((file, index) => (
-                        <div key={index} className="flex items-center justify-between bg-background/50 rounded-lg px-3 py-2">
-                          <span className="text-sm text-foreground truncate">{file.name}</span>
-                          <button
-                            type="button"
-                            onClick={() => removeStlFile(index)}
-                            className="text-destructive hover:text-destructive/80 text-sm"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <div className="border-2 border-dashed border-green-500/30 rounded-xl p-4 text-center">
+                    <FileBox className="w-8 h-8 text-green-500/60 mx-auto mb-3" />
+                    <p className="text-sm text-foreground font-medium mb-2">
+                      Share your 3D model files via:
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Google Drive, Dropbox, Terabox, WeTransfer, or any other file sharing service
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Simply include the file link in your message below, and we'll discuss the details on X!
+                    </p>
+                  </div>
                 </div>
               )}
               
