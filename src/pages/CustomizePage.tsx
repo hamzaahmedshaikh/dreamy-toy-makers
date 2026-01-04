@@ -419,12 +419,12 @@ const CustomizePage = () => {
                   onClick={() => handleModelChoice(true)}
                   className="glass-card p-6 rounded-2xl hover:shadow-glow hover:scale-105 transition-all duration-300 text-left group"
                 >
-                  <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <CheckCircle className="w-8 h-8 text-green-500" />
+                  <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <CheckCircle className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="font-semibold text-lg text-foreground mb-2">Yes, I Have a Model</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Upload your STL or other 3D files and I'll print it for you.
+                  <p className="text-base text-muted-foreground">
+                    Share your STL or other 3D files and I'll print it for you.
                   </p>
                 </button>
 
@@ -436,11 +436,11 @@ const CustomizePage = () => {
                     <Wand2 className="w-8 h-8 text-primary" />
                   </div>
                   <h3 className="font-semibold text-lg text-foreground mb-2">No, Design It For Me</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-base text-muted-foreground">
                     I'll create a custom 3D model based on your character artwork.
                   </p>
-                  <div className="mt-3 inline-flex items-center gap-1 text-xs text-primary font-medium">
-                    <Sparkles className="w-3 h-3" />
+                  <div className="mt-3 inline-flex items-center gap-1 text-sm text-primary font-medium">
+                    <Sparkles className="w-4 h-4" />
                     Professional 3D illustration (paid service)
                   </div>
                 </button>
@@ -643,17 +643,17 @@ const CustomizePage = () => {
 
               {/* 3D Model Sharing Section (only if hasModel is true) */}
               {hasModel && (
-                <div className="mb-6 p-4 bg-green-500/10 rounded-xl border border-green-500/20">
-                  <Label htmlFor="modelFileLink" className="text-green-600 dark:text-green-400 font-semibold mb-3 block">
+                <div className="mb-6 p-5 bg-secondary/50 rounded-xl border border-primary/20">
+                  <Label htmlFor="modelFileLink" className="text-primary font-semibold mb-3 block text-base">
                     Share Your 3D Model Files
                   </Label>
-                  <div className="border-2 border-dashed border-green-500/30 rounded-xl p-4">
+                  <div className="border-2 border-dashed border-primary/30 rounded-xl p-5">
                     <div className="text-center mb-4">
-                      <FileBox className="w-8 h-8 text-green-500/60 mx-auto mb-3" />
-                      <p className="text-sm text-foreground font-medium mb-2">
+                      <FileBox className="w-10 h-10 text-primary/60 mx-auto mb-3" />
+                      <p className="text-base text-foreground font-medium mb-2">
                         Share your 3D model files via:
                       </p>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-base text-muted-foreground">
                         Google Drive, Dropbox, Terabox, WeTransfer, or any other file sharing service
                       </p>
                     </div>
@@ -663,9 +663,9 @@ const CustomizePage = () => {
                       placeholder="Paste your file sharing link here..."
                       value={formData.modelFileLink}
                       onChange={(e) => setFormData({ ...formData, modelFileLink: e.target.value })}
-                      className="bg-background/50 border-green-500/30 focus:border-green-500/60"
+                      className="bg-background/50 border-primary/30 focus:border-primary/60 text-base"
                     />
-                    <p className="text-xs text-muted-foreground mt-2 text-center">
+                    <p className="text-sm text-muted-foreground mt-3 text-center">
                       We'll discuss the details on X after you place your order!
                     </p>
                   </div>
