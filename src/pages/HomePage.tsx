@@ -38,7 +38,7 @@ const HomePage = () => {
               <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
               <div className="text-left">
                 <p className="text-sm text-muted-foreground">Premium Collectible</p>
-                <p className="text-3xl font-bold text-foreground">$489 <span className="text-base font-normal text-muted-foreground">USD</span></p>
+                <p className="text-3xl font-bold text-foreground">$1,250 <span className="text-base font-normal text-muted-foreground">USD</span></p>
               </div>
               <Star className="w-6 h-6 text-accent fill-accent animate-twinkle" />
             </div>
